@@ -1,4 +1,4 @@
-import Krrs from "./krrs";
+import Krrs from "./Krrs/page";
 import Image from "next/image";
 import "tailwindcss";
 
