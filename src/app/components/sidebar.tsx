@@ -9,7 +9,12 @@ type Side = {
   href: string;
 };
 
-const sidebar: Side[] = [{ label: "Dashboard", href: "/Dashboard" }];
+const sidebar: Side[] = [
+  { label: "Pengumuman", href: "/pengumuman" },
+  { label: "Dashboard", href: "/Dashboard" },
+  { label: "KRRS", href: "/Krrs" },
+  { label: "FAQ", href: "/faq" },
+];
 
 export default function Sidebar() {
   const path = usePathname();
