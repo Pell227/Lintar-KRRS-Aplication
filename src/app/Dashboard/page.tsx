@@ -15,7 +15,7 @@ export default function Dashboard() {
   return (
     <div className="grid gap-6 xl:grid-cols-[1fr_340px]">
       <div className="grid content-start gap-6">
-        <div className="rounded-xl bg-[#376ABF] p-5 text-white">
+        <div className="rounded-xl bg-[#f31313] p-5 text-white">
           <h1 className="text-2xl font-bold">Halo, {dataMahasiswa.Nama}</h1>
           <p className="text-white/80">
             {dataMahasiswa.NIM} · {dataMahasiswa.Prodi}
@@ -23,29 +23,29 @@ export default function Dashboard() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl bg-[#376ABF] p-5 text-white">
+          <div className="rounded-xl bg-[#f31313] p-5 text-white">
             <p className="text-sm">IPK</p>
             <p className="text-3xl font-bold">{dataAkademik.ipk}</p>
           </div>
-          <div className="rounded-xl bg-[#376ABF] p-5 text-white">
+          <div className="rounded-xl bg-[#Ffffff] p-5 text-black">
             <p className="text-sm">IPS Semester {dataAkademik.Semester}</p>
             <p className="text-3xl font-bold">{dataAkademik.ips}</p>
           </div>
-          <div className="rounded-xl bg-[#376ABF] p-5 text-white">
+          <div className="rounded-xl bg-[#f31313] p-5 text-white">
             <p className="text-sm">Total SKS</p>
             <p className="text-3xl font-bold">{dataAkademik.sks}</p>
           </div>
         </div>
 
         <section>
-          <div className="rounded-lg border p-3 bg-[#376ABF]">
-            <h2 className="mb-2 text-xl font-semibold text-white">Dosen PA</h2>
-            <p className="gap-4 font-medium text-white">
+          <div className="rounded-lg border p-2 bg-[#ffffff]">
+            <h2 className="mb-2 text-xl font-semibold text-black">Dosen PA</h2>
+            <p className="gap-4 font-medium text-black">
               {dataDosenPa.namadosen}
             </p>
-            <p className="text-sm text-white">NPD: {dataDosenPa.npd}</p>
-            <p className="text-sm text-white">{dataDosenPa.email}</p>
-            <p className="text-sm text-white">{dataDosenPa.telp}</p>
+            <p className="text-sm text-black">NPD : {dataDosenPa.npd}</p>
+            <p className="text-sm text-black">Email : {dataDosenPa.email}</p>
+            <p className="text-sm text-black">Telepon : {dataDosenPa.telp}</p>
           </div>
         </section>
       </div>
