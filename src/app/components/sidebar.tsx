@@ -14,6 +14,7 @@ const sidebar: Side[] = [
   { label: "Dashboard", href: "/Dashboard" },
   { label: "KRRS", href: "/Krrs" },
   { label: "FAQ", href: "/faq" },
+  { label: "Landpage", href: "/" },
 ];
 
 export default function Sidebar() {
