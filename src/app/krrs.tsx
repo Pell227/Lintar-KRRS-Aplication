@@ -90,7 +90,6 @@ export default function Krrs() {
             </div>
           </div>
         </section>
-        <p className="mt-4 text-center text-xs text-slate-500">Mockup tampilan awal · Data mata kuliah masih contoh</p>
       </div>
     </main>
   );
