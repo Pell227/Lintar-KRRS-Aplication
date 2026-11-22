@@ -1,36 +1,35 @@
+
 "use client";
 
 import { useState } from "react";
 import KalenderAkademik from "../components/kalenderakademik";
+import JadwalKuliah from "../components/jadwalkuliah";
 
 export default function AkademikPage() {
     const [activeTab, setActiveTab] = useState("kalender");
 
     return (
-        <main className="min-h-screen bg-[#F5EDED] p-6">
-
-            <div className="max-w-7xl mx-auto">
+        <main className="min-h-screen bg-background p-6 text-foreground transition-colors duration-200">
+            <div className="mx-auto max-w-7xl">
 
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-[#D72323]">
+                    <h1 className="text-3xl font-bold text-accent">
                         Informasi Akademik
                     </h1>
 
-                    <p className="text-[#3E3636] mt-2">
-                        Lihat kalender akademik dan jadwal
-                        perkuliahan mahasiswa.
+                    <p className="mt-2 text-secondary-text">
+                        Lihat kalender akademik dan jadwal perkuliahan mahasiswa.
                     </p>
                 </div>
 
-                {/* Tab Navigation */}
-                <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row gap-2 mb-6">
-
+                {/* Tab Navigasi */}
+                <div className="mb-6 flex flex-col gap-2 rounded-xl border border-border-color bg-surface p-2 shadow-sm sm:flex-row">
                     <button
                         onClick={() => setActiveTab("kalender")}
-                        className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold transition-colors ${activeTab === "kalender"
-                            ? "bg-[#D72323] text-white"
-                            : "text-[#3E3636] hover:bg-[#F5EDED]"
+                        className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-5 py-3 font-semibold transition-colors ${activeTab === "kalender"
+                                ? "bg-accent text-white"
+                                : "text-foreground hover:bg-background"
                             }`}
                     >
                         <span>📅</span>
@@ -39,40 +38,24 @@ export default function AkademikPage() {
 
                     <button
                         onClick={() => setActiveTab("jadwal")}
-                        className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold transition-colors ${activeTab === "jadwal"
-                            ? "bg-[#D72323] text-white"
-                            : "text-[#3E3636] hover:bg-[#F5EDED]"
+                        className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-5 py-3 font-semibold transition-colors ${activeTab === "jadwal"
+                                ? "bg-accent text-white"
+                                : "text-foreground hover:bg-background"
                             }`}
                     >
                         <span>🕒</span>
                         Jadwal Mata Kuliah
                     </button>
-
                 </div>
 
-                {/* Content */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                {/* Konten */}
+                <div className="rounded-xl border border-border-color bg-surface p-6 shadow-sm transition-colors duration-200">
+                    {activeTab === "kalender" && <KalenderAkademik />}
 
-                    {activeTab === "kalender" && (
-                        <KalenderAkademik />
-                    )}
-
-                    {activeTab === "jadwal" && (
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-900">
-                                Jadwal Mata Kuliah
-                            </h2>
-
-                            <p className="text-gray-500 mt-2">
-                                Informasi jadwal perkuliahan mahasiswa.
-                            </p>
-                        </div>
-                    )}
-
+                    {activeTab === "jadwal" && <JadwalKuliah />}
                 </div>
 
             </div>
-
         </main>
     );
 }

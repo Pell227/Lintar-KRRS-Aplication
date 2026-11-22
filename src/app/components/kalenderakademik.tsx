@@ -232,15 +232,16 @@ export default function KalenderAkademik() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
             {/* Kalender Bulanan */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
+            <div className="rounded-xl border border-border-color bg-surface p-5 shadow-sm transition-colors duration-200 lg:col-span-2">
 
                 {/* Header */}
-                <div className="mb-6 flex items-center justify-between">
+                <div className="mb-6 flex items-center justify-between gap-3">
                     <div>
-                        <h2 className="text-xl font-bold text-black">
+                        <h2 className="text-xl font-bold text-foreground">
                             {monthNames[month]} {year}
                         </h2>
-                        <p className="mt-1 text-sm text-[#3E3636]">
+
+                        <p className="mt-1 text-sm text-secondary-text">
                             Kalender Akademik Semester Ganjil 2026/2027
                         </p>
                     </div>
@@ -248,7 +249,7 @@ export default function KalenderAkademik() {
                     <div className="flex gap-2">
                         <button
                             onClick={() => changeMonth(-1)}
-                            className="rounded-lg border border-gray-300 px-3 py-2 text-black hover:bg-[#F5EDED]"
+                            className="rounded-lg border border-border-color bg-background px-3 py-2 text-foreground transition-colors hover:bg-accent hover:text-white"
                             aria-label="Bulan sebelumnya"
                         >
                             ←
@@ -256,7 +257,7 @@ export default function KalenderAkademik() {
 
                         <button
                             onClick={() => changeMonth(1)}
-                            className="rounded-lg border border-gray-300 px-3 py-2 text-black hover:bg-[#F5EDED]"
+                            className="rounded-lg border border-border-color bg-background px-3 py-2 text-foreground transition-colors hover:bg-accent hover:text-white"
                             aria-label="Bulan berikutnya"
                         >
                             →
@@ -269,7 +270,7 @@ export default function KalenderAkademik() {
                     {dayNames.map((day) => (
                         <div
                             key={day}
-                            className="py-2 text-sm font-bold text-[#3E3636]"
+                            className="py-2 text-sm font-bold text-secondary-text"
                         >
                             {day}
                         </div>
@@ -295,10 +296,10 @@ export default function KalenderAkademik() {
                                     setSelectedDate(new Date(year, month, day))
                                 }
                                 className={`flex min-h-14 flex-col items-center justify-center rounded-lg p-1 transition-colors ${isSelected
-                                        ? "bg-[#D72323] text-white"
+                                        ? "bg-accent text-white"
                                         : events.length > 0
-                                            ? "bg-red-50 text-black hover:bg-red-100"
-                                            : "bg-[#F5EDED] text-black hover:bg-red-100"
+                                            ? "bg-red-50 text-foreground hover:bg-red-100 dark:bg-[#222831] dark:hover:bg-[#454C56]"
+                                            : "bg-background text-foreground hover:bg-accent/20"
                                     }`}
                             >
                                 <span
@@ -328,8 +329,8 @@ export default function KalenderAkademik() {
                 </div>
 
                 {/* Legend */}
-                <div className="mt-5 border-t border-gray-200 pt-4">
-                    <h4 className="mb-3 text-sm font-bold text-black">
+                <div className="mt-5 border-t border-border-color pt-4">
+                    <h4 className="mb-3 text-sm font-bold text-foreground">
                         Keterangan Agenda
                     </h4>
 
@@ -343,7 +344,8 @@ export default function KalenderAkademik() {
                                     className="h-2.5 w-2.5 shrink-0 rounded-full"
                                     style={{ backgroundColor: info.color }}
                                 />
-                                <span className="text-xs text-[#3E3636]">
+
+                                <span className="text-xs text-secondary-text">
                                     {info.label}
                                 </span>
                             </div>
@@ -353,20 +355,20 @@ export default function KalenderAkademik() {
             </div>
 
             {/* Detail Agenda */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-bold text-black">
+            <div className="rounded-xl border border-border-color bg-surface p-5 shadow-sm transition-colors duration-200">
+                <h3 className="text-lg font-bold text-foreground">
                     Detail Agenda
                 </h3>
 
-                <div className="mt-2 h-1 w-12 rounded-full bg-[#D72323]" />
+                <div className="mt-2 h-1 w-12 rounded-full bg-accent" />
 
                 {!selectedDate ? (
-                    <p className="mt-5 text-sm text-[#3E3636]">
+                    <p className="mt-5 text-sm text-secondary-text">
                         Pilih tanggal pada kalender untuk melihat agenda akademik.
                     </p>
                 ) : (
                     <>
-                        <p className="mt-4 text-sm font-semibold text-[#D72323]">
+                        <p className="mt-4 text-sm font-semibold text-accent">
                             {selectedDate.toLocaleDateString("id-ID", {
                                 day: "numeric",
                                 month: "long",
@@ -382,7 +384,7 @@ export default function KalenderAkademik() {
                                     return (
                                         <div
                                             key={index}
-                                            className="rounded-lg bg-[#F5EDED] p-4"
+                                            className="rounded-lg border border-border-color bg-background p-4 transition-colors duration-200"
                                             style={{
                                                 borderLeft: `4px solid ${category.color}`,
                                             }}
@@ -394,6 +396,7 @@ export default function KalenderAkademik() {
                                                         backgroundColor: category.color,
                                                     }}
                                                 />
+
                                                 <span
                                                     className="text-xs font-semibold"
                                                     style={{ color: category.color }}
@@ -402,11 +405,11 @@ export default function KalenderAkademik() {
                                                 </span>
                                             </div>
 
-                                            <h4 className="text-sm font-bold text-black">
+                                            <h4 className="text-sm font-bold text-foreground">
                                                 {event.nama}
                                             </h4>
 
-                                            <p className="mt-2 text-xs leading-relaxed text-[#3E3636]">
+                                            <p className="mt-2 text-xs leading-relaxed text-secondary-text">
                                                 {formatDate(event.mulai)} – {formatDate(event.selesai)}
                                             </p>
                                         </div>
@@ -414,7 +417,7 @@ export default function KalenderAkademik() {
                                 })}
                             </div>
                         ) : (
-                            <p className="mt-4 rounded-lg bg-[#F5EDED] p-4 text-sm text-[#3E3636]">
+                            <p className="mt-4 rounded-lg bg-background p-4 text-sm text-secondary-text">
                                 Tidak ada agenda akademik pada tanggal ini.
                             </p>
                         )}
