@@ -51,6 +51,9 @@ export default function Sidebar() {
           : "bg-white text-black"
           } ${open ? "translate-x-0" : "-translate-x-full"
           }`}
+        className={`fixed left-0 top-0 z-40 h-screen w-60 bg-[#ffffff]  rounded-2xl p-4 text-black transition-transform duration-300 md:translate-x-0 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {/* Logo */}
         <h2 className="mb-8 mt-2 text-2xl font-bold">
