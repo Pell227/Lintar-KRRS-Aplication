@@ -58,7 +58,7 @@ export default function FAQAccordion() {
               {faq.pertanyaan}
             </span>
 
-            <span className="text-xl font-bold text-[#AB1509]">
+            <span className="text-xl font-bold text-[#D72323]">
               {activeId === faq.id ? "−" : "+"}
             </span>
           </button>
