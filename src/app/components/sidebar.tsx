@@ -37,7 +37,7 @@ export default function Sidebar() {
         ></div>
       )}
       <aside
-        className={`fixed left-0 top-0 z-40 h-screen w-60 bg-[#ffffff] p-4 text-black transition-transform duration-300 md:translate-x-0 ${
+        className={`fixed left-0 top-0 z-40 h-screen w-60 bg-[#ffffff]  rounded-2xl p-4 text-black transition-transform duration-300 md:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

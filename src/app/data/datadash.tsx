@@ -9,6 +9,7 @@ export type Akademik = {
   ips: number;
   ipk: number;
   sks: number;
+  kehadiran: number;
 };
 
 export type Pengumuman = {
@@ -43,6 +44,7 @@ export const dataAkademik: Akademik = {
   ips: 3.91,
   ipk: 3.85,
   sks: 86,
+  kehadiran: 90,
 };
 
 export const dataPengumuman: Pengumuman[] = [
