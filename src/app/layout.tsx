@@ -25,9 +25,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-screen flex flex-col bg-[#F5EDED]">
         <Sidebar />
-        <main className="p-6 pt-16 md:ml-60 md:pt-6">{children}</main>
+
+        <main className="min-h-screen bg-[#F5EDED] p-6 pt-16 md:ml-60 md:pt-6">
+          {children}
+        </main>
       </body>
     </html>
   );
