@@ -13,8 +13,8 @@ type Side = {
 const sidebar: Side[] = [
   { label: "Pengumuman", href: "/pengumuman" },
   { label: "Dashboard", href: "/Dashboard" },
+  { label: "KRRS", href: "/krrs" },
   { label: "Akademik", href: "/akademik" },
-  { label: "KRRS", href: "/Krrs" },
   { label: "FAQ", href: "/faq" },
   { label: "Landpage", href: "/" },
 ];
