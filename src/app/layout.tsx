@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -36,9 +35,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
         </ThemeProvider>
-      <body className="min-h-full flex flex-col">
-        <Sidebar />
-        <main className="p-3 pt-14 md:ml-60 md:pt-3">{children}</main>
       </body>
     </html>
   );
