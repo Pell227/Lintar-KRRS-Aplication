@@ -1,3 +1,4 @@
+import building from "../Assets/gedung.jpg";
 
 function getToday(): string {
     return new Date().toLocaleDateString("en-US", {
@@ -9,10 +10,10 @@ function getToday(): string {
 
 export default function Home() {
     return (
-        <div className="grid grid-cols-1 font-serif bg-[#f4f1ea] text-[#2c2c2c] p-8">
-            <main className="grid grid-cols-1 content-start py-8">
+        <div className="min-h-screen text-foreground font-serif">
+            <div className="grid grid-cols-1 font-serif p-8">
                 <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-12 md:col-span-3 pt-3 pl-10">
+                    <div className="col-span-12 md:col-span-3 pt-3 pl-2">
                         {getToday()}
                     </div>
 
@@ -25,12 +26,17 @@ export default function Home() {
                     <div className="col-span-12 md:col-span-3"></div>
                 </div>
                 <div className="my-6 grid gap-2">
-                    <hr className="border-t-2 border-[#2c2c2c]" />
-                    <hr className="border-t-2 border-[#2c2c2c]" />
+                    <hr className="border-t-2 border-foreground" />
+                    <hr className="border-t-2 border-foreground" />
                 </div>
 
                 <section className="grid grid-cols-12 gap-6">
-                    <article className="col-span-12 md:col-span-6 md:border-r-2 md:border-[#2c2c2c] md:pr-6">Placeholder foto</article>
+                    <div className="col-span-12 md:col-span-6 md:border-r-2 md:border-foreground md:pr-6">
+                        <img
+                            src={building.src}
+                            alt=""
+                        />
+                    </div>
                     <div className="col-span-12 md:col-span-6">
                         <article className="my-3">Title 1
                         <p>Lorem ipsum dolor sit amet consectetur adipiscing elit. 
@@ -61,7 +67,7 @@ export default function Home() {
                     </article>
                     </div>
                 </section>
-            </main>
         </div>
+    </div>
     );
 }
