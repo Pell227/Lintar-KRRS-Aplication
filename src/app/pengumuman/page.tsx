@@ -8,7 +8,7 @@ function getToday(): string {
     });
 }
 
-export default function Home() {
+export default function Announcement() {
     return (
         <div className="min-h-screen text-foreground font-serif">
             <div className="grid grid-cols-1 font-serif p-8">
