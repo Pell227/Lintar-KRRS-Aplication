@@ -1,8 +1,12 @@
 'use client';
 
 import { Printer } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import PrintStyles from "../components/Print";
+import { CURRENT_NIM, KHS_PATH, bobotKualitas, nilaiAngka, type Semester } from "./data/dataKHS";
+import AnimatedPrinter from "@/app/components/printer";
+import HoverGifButton from "../components/gif";
 
 const columns = [
     "No", "Kode MK", "Nama Mata Kuliah",
@@ -10,73 +14,46 @@ const columns = [
     "Nilai (Angka)", "Bobot kualitas (sksN)", "ket",
 ];
 
-type Course = {
-    kode: string;
-    nama: string;
-    status: string;
-    sks: number;
-    huruf: string;
-    angka: number;
-    bobot: number;
-    ket: string;
-};
-
-type Semester = {
-    id: string;
-    label: string;
-    jmlSks: number;
-    ips: number;
-    kreditDiambil: number;
-    kreditDiperoleh: number;
-    ipk: number;
-    courses: Course[];
-};
-
-// newest semester first
-const semesters: Semester[] = [
-    {
-        id: "2025-ganjil",
-        label: "Ganjil 2025/2026",
-        jmlSks: 21,
-        ips: 3.6,
-        kreditDiambil: 62,
-        kreditDiperoleh: 62,
-        ipk: 3.5,
-        courses: [
-            { kode: "IF301", nama: "Basis Data", status: "Baru", sks: 3, huruf: "A", angka: 4, bobot: 12, ket: "" },
-            { kode: "IF302", nama: "Jaringan Komputer", status: "Baru", sks: 3, huruf: "B+", angka: 3.3, bobot: 9.9, ket: "" },
-        ],
-    },
-    {
-        id: "2024-genap",
-        label: "Genap 2024/2025",
-        jmlSks: 20,
-        ips: 3.4,
-        kreditDiambil: 41,
-        kreditDiperoleh: 41,
-        ipk: 3.4,
-        courses: [
-            { kode: "IF201", nama: "Algoritma", status: "Baru", sks: 3, huruf: "B+", angka: 3.3, bobot: 9.9, ket: "" },
-        ],
-    },
-];
-
 const cell = "border border-foreground px-2 py-2";
 
-// oldest semester first, so the progress bar reads left to right
-const timeline = [...semesters].reverse();
-
-export default function Card() {
+export default function KhsPage() {
+    const [semesters, setSemesters] = useState<Semester[] | null>(null);
+    const [failed, setFailed] = useState(false);
     const [detailOpen, setDetailOpen] = useState(false);
-    const [semesterId, setSemesterId] = useState(semesters[0].id);
+    const [semesterId, setSemesterId] = useState<string | null>(null);
+
+    useEffect(() => {
+        let cancelled = false;
+        fetch(`/api/khs?nim=${encodeURIComponent(CURRENT_NIM)}`)
+            .then((res) => {
+                if (!res.ok) throw new Error("request failed");
+                return res.json() as Promise<Semester[]>;
+            })
+            .then((data) => {
+                if (!cancelled) setSemesters(data);
+            })
+            .catch(() => {
+                if (!cancelled) setFailed(true);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    if (failed) {
+        return <p className="p-12 md:p-8 text-foreground">Gagal memuat data nilai.</p>;
+    }
+    if (!semesters) {
+        return <p className="p-12 md:p-8 text-foreground">Memuat data nilai...</p>;
+    }
+    if (semesters.length === 0) {
+        return <p className="p-12 md:p-8 text-foreground">Belum ada data nilai.</p>;
+    }
 
     const semester = semesters.find((s) => s.id === semesterId) ?? semesters[0];
-    const selectedIndex = timeline.findIndex((s) => s.id === semesterId);
-
-    function handleRowClick(kode: string) {
-        // placeholder: replace with what should happen (open a modal, navigate, etc.)
-        console.log("clicked course", kode);
-    }
+    const timeline = [...semesters].reverse();
+    const selectedIndex = timeline.findIndex((s) => s.id === semester.id);
 
     function selectSemester(id: string) {
         setSemesterId(id);
@@ -84,66 +61,67 @@ export default function Card() {
     }
 
     return (
+        <div
+        style={
+            detailOpen
+                ? {
+                      cursor: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 10 10, zoom-in`,
+                  }
+                : undefined
+            }
+            className={`p-12 md:p-8 text-foreground ${detailOpen ? "cursor-zoom-in" : ""}`}
+        >
+
         <div className="p-12 md:p-8 text-foreground">
             <PrintStyles />
 
-            {/* Semester progress bar (not printed) */}
-            <nav aria-label="Pilih semester" className="mb-6 overflow-x-auto print:hidden">
-                <ol className="flex min-w-max items-start">
-                    {timeline.map((s, i) => {
-                        const reached = i <= selectedIndex;
-                        const active = i === selectedIndex;
+            <div id="forPrint" className="grid gap-4 border-2 border-foreground bg-surface p-12 rounded-2xl">
+                <nav aria-label="Pilih semester" className="-mx-12 -mt-12 overflow-x-auto border-b-2 border-foreground px-12 py-5 print:hidden">
+                    <ol className="flex min-w-max items-start">
+                        {timeline.map((s, i) => {
+                            const reached = i <= selectedIndex;
+                            const active = i === selectedIndex;
 
-                        return (
-                            <li key={s.id} className="relative flex min-w-28 flex-1 flex-col items-center">
-                                {/* line from the previous circle to this one */}
-                                {i > 0 && (
-                                    <div
-                                        className={`absolute right-1/2 top-4 h-0.5 w-full -translate-y-1/2 ${
-                                            reached ? "bg-foreground" : "bg-foreground/25"
-                                        }`}
-                                    />
-                                )}
+                            return (
+                                <li key={s.id} className="relative flex min-w-28 flex-1 flex-col items-center">
+                                    {i > 0 && (
+                                        <div
+                                            className={`absolute right-1/2 top-4 h-0.5 w-full -translate-y-1/2 ${
+                                                reached ? "bg-foreground" : "bg-foreground/25"
+                                            }`}
+                                        />
+                                    )}
 
-                                <button
-                                    type="button"
-                                    onClick={() => selectSemester(s.id)}
-                                    aria-current={active ? "step" : undefined}
-                                    className="relative z-10 flex flex-col items-center hover:cursor-pointer"
-                                >
-                                    <span
-                                        className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-foreground text-sm font-semibold ${
-                                            reached ? "bg-foreground text-surface" : "bg-surface"
-                                        } ${active ? "ring-4 ring-accent/40" : ""}`}
+                                    <button
+                                        type="button"
+                                        onClick={() => selectSemester(s.id)}
+                                        aria-current={active ? "step" : undefined}
+                                        className="relative z-10 flex flex-col items-center hover:cursor-pointer"
                                     >
-                                        {i + 1}
-                                    </span>
-                                    <span className={`mt-2 text-center text-xs ${active ? "font-semibold" : ""}`}>
-                                        {s.label}
-                                    </span>
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ol>
-            </nav>
+                                        <span
+                                            className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-foreground text-sm font-semibold ${
+                                                reached ? "bg-foreground text-surface" : "bg-surface"
+                                            } ${active ? "ring-4 ring-accent/40" : ""}`}
+                                        >
+                                            {i + 1}
+                                        </span>
+                                        <span className={`mt-2 text-center text-xs ${active ? "font-semibold" : ""}`}>
+                                            {s.label}
+                                        </span>
+                                    </button>
+                                </li>
+                            );
+                        })}
+                    </ol>
+                </nav>
 
-            {/* The card (this id must match the one used in ../components/Print) */}
-            <div id="forPrint" className="grid gap-4 border-2 border-foreground bg-surface p-12">
                 <header className="grid grid-cols-12 items-start gap-4">
                     <div className="col-span-12 text-center md:col-span-6 md:col-start-4">
                         <h1 className="text-3xl font-semibold">Kartu Hasil Studi</h1>
                         <p className="text-xl">{semester.label}</p>
                     </div>
                     <div className="col-span-12 flex justify-end md:col-span-3 print:hidden">
-                        <button
-                            type="button"
-                            onClick={() => window.print()}
-                            className="flex items-center gap-2 border-2 border-foreground px-6 py-2 hover:cursor-pointer"
-                        >
-                            <Printer className="h-5 w-5" />
-                            print
-                        </button>
+                       <AnimatedPrinter />                            
                     </div>
                 </header>
 
@@ -185,14 +163,13 @@ export default function Card() {
                     </div>
 
                     <div className="col-span-12 flex justify-end md:col-span-3 print:hidden">
-                        <button
-                            type="button"
+                        <HoverGifButton
+                            src="/analytics.gif"
+                            stillSrc="/analytics.png"
+                            alt={detailOpen ? "Tutup Detail" : "Detail"}
+                            active={detailOpen}
                             onClick={() => setDetailOpen((open) => !open)}
-                            aria-pressed={detailOpen}
-                            className="border-2 border-foreground px-6 py-2 hover:cursor-pointer"
-                        >
-                            {detailOpen ? "Tutup Detail" : "Detail"}
-                        </button>
+                        />
                     </div>
                 </section>
 
@@ -220,19 +197,18 @@ export default function Card() {
 
                         <tbody>
                             {semester.courses.map((c, i) => (
-                                <tr key={c.kode}>
+                                <tr key={c.id}>
                                     <td className={cell}>{i + 1}</td>
-                                    <td className={cell}>{c.kode}</td>
+                                    <td className={cell}>{c.id}</td>
 
                                     {detailOpen ? (
                                         <td className="border border-foreground p-0">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRowClick(c.kode)}
-                                                className="block w-full px-2 py-2 text-left hover:bg-accent/20 hover:cursor-pointer"
+                                            <Link
+                                                href={`${KHS_PATH}/${encodeURIComponent(c.id)}`}
+                                                className="block w-full px-2 py-2 text-left hover:bg-accent/20"
                                             >
                                                 {c.nama}
-                                            </button>
+                                            </Link>
                                         </td>
                                     ) : (
                                         <td className={cell}>{c.nama}</td>
@@ -241,8 +217,8 @@ export default function Card() {
                                     <td className={cell}>{c.status}</td>
                                     <td className={cell}>{c.sks}</td>
                                     <td className={cell}>{c.huruf}</td>
-                                    <td className={cell}>{c.angka}</td>
-                                    <td className={cell}>{c.bobot}</td>
+                                    <td className={cell}>{nilaiAngka(c).toFixed(2)}</td>
+                                    <td className={cell}>{bobotKualitas(c).toFixed(2)}</td>
                                     <td className={cell}>{c.ket}</td>
                                 </tr>
                             ))}
@@ -258,6 +234,7 @@ export default function Card() {
                     </table>
                 </div>
             </div>
+        </div>
         </div>
     );
 }
