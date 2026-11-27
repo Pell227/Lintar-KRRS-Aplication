@@ -15,15 +15,12 @@ type ThemeContextType = {
   toggleTheme: () => void;
 };
 
-const ThemeContext = createContext<ThemeContextType | undefined>(
-  undefined
-);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
-  // Membaca tema yang tersimpan
   useEffect(() => {
     const savedTheme = localStorage.getItem("lintar-theme");
 
@@ -34,22 +31,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Mengatur class dan menyimpan tema
   useEffect(() => {
     if (!mounted) return;
 
-    document.documentElement.classList.toggle(
-      "dark",
-      theme === "dark"
-    );
+    document.documentElement.classList.toggle("dark", theme === "dark");
 
     localStorage.setItem("lintar-theme", theme);
   }, [theme, mounted]);
 
   function toggleTheme() {
-    setTheme((current) =>
-      current === "light" ? "dark" : "light"
-    );
+    setTheme((current) => (current === "light" ? "dark" : "light"));
   }
 
   return (
