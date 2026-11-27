@@ -1,3 +1,5 @@
+import defaultFoto from "../Assets/profile.jpg";
+
 interface KtmCardProps {
   nama?: string;
   prodi?: string;
@@ -6,7 +8,6 @@ interface KtmCardProps {
   foto?: string;
 }
 
-// Barcode dekoratif dari digit NIM (bukan barcode standar yang bisa discan)
 function Barcode({ value }: { value: string }) {
   const bars: { x: number; w: number }[] = [];
   let x = 0;
@@ -42,40 +43,38 @@ export default function KtmCard({
   prodi = "Namaprodi",
   fakultas = "NamaFakultas",
   nim = "2025535250166",
-  foto = "/foto.jpg",
+  foto = defaultFoto.src,
 }: KtmCardProps) {
   return (
     <div className="relative h-[428px] w-[819px] max-w-none overflow-hidden rounded-2xl bg-white font-serif text-black shadow-lg">
-      <div className="absolute inset-x-0 top-[7px] h-[63px] bg-[#D62525]" />
+      <div className="absolute inset-x-0 top-[1px] h-[63px] bg-[#D62525]" />
 
       <div className="absolute inset-x-0 bottom-0 h-[26px] bg-[#D62525]" />
       <div className="absolute bottom-0 left-[402px] right-0 h-[38px] rounded-tl-[24px] bg-[#D62525]" />
 
       <img
-        src={foto}
+        src={defaultFoto.src}
         alt={`Foto ${nama}`}
         className="absolute left-[28px] top-[49px] h-[344px] w-[269px] rounded-xl border border-black object-cover"
       />
 
-      {/* Nama */}
-      <div className="absolute left-[342px] top-[130px] flex w-[426px] items-center text-[24px]">
+      <div className="absolute left-[342px] top-[130px] flex w-[426px] items-center text-[20px]">
         <span className="w-[190px]">NAMA</span>
         <span className="font-semibold">{nama}</span>
       </div>
       <div className="absolute left-[342px] top-[178px] w-[426px] border-t border-black" />
 
-      <div className="absolute left-[342px] top-[186px] w-[426px] text-[24px] leading-[35px]">
+      <div className="absolute left-[342px] top-[186px] w-[426px] text-[20px] leading-[35px]">
         <div className="flex">
           <span className="w-[190px]">PRODI</span>
           <span>{prodi}</span>
         </div>
         <div className="flex">
           <span className="w-[190px]">FAKULTAS</span>
-          <span>{fakultas}</span>
+          <span className="right-[5px]">{fakultas}</span>
         </div>
       </div>
 
-      {/* Barcode + NIM */}
       <div className="absolute left-[383px] top-[292px] h-[52px] w-[356px]">
         <Barcode value={nim} />
       </div>

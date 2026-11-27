@@ -10,10 +10,6 @@ import {
 } from "../data/datadash";
 
 import book from "../Assets/book.png";
-import IPK from "../Assets/graduation.png";
-import IPS from "../Assets/report.png";
-import kehadiran from "../Assets/attendance.png";
-import SKS from "../Assets/stackbook.png";
 import profile from "../Assets/profile.jpg";
 import { useTheme } from "../components/themeprovider";
 
@@ -54,7 +50,7 @@ export default function Dashboard() {
     ? "linear-gradient(to right, #82adca, #074a76)"
     : "linear-gradient(to right, #D72323, #F5EFE1)";
   const textColor = isDark ? "text-white" : "text-black";
-  const borderColor = isDark ? "border-white/40" : "border-black";
+  const borderColor = isDark ? "border-white/40" : "border-black/20";
   const innerBg = isDark ? "bg-white/10" : "bg-white";
   const subText = isDark ? "text-white/60" : "text-black/60";
 
@@ -92,10 +88,8 @@ export default function Dashboard() {
             style={{ background: gradient }}
           >
             <p className="text-sm">IPK</p>
-            <img
-              src={IPK.src}
-              alt=""
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-solid fa-graduation-cap text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",
@@ -111,10 +105,8 @@ export default function Dashboard() {
             style={{ background: gradient }}
           >
             <p className="text-sm">IPS</p>
-            <img
-              src={IPS.src}
-              alt=""
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-regular fa-file-lines text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",
@@ -130,10 +122,8 @@ export default function Dashboard() {
             style={{ background: gradient }}
           >
             <p className="text-sm">Total SKS</p>
-            <img
-              src={SKS.src}
-              alt=""
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-solid fa-book text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",
@@ -149,10 +139,8 @@ export default function Dashboard() {
             style={{ background: gradient }}
           >
             <p className="text-sm">Kehadiran</p>
-            <img
-              src={kehadiran.src}
-              alt=""
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-solid fa-chart-line text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",

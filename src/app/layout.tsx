@@ -19,13 +19,23 @@ export const metadata: Metadata = {
   description: "Sistem Informasi Akademik Lintar KRRS",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        />
+      </head>
       <body className="min-h-screen flex flex-col bg-background text-foreground">
         <ThemeProvider>
           <Sidebar />
