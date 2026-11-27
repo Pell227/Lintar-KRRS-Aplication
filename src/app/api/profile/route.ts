@@ -17,8 +17,6 @@ export async function GET(req: Request) {
       { status: 404 },
     );
   }
-
-  return NextResponse.json(data);
 }
 
 export async function POST(req: Request) {
@@ -55,3 +53,4 @@ export async function PUT(req: Request) {
 
   return NextResponse.json(data);
 }
+
