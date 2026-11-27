@@ -15,6 +15,7 @@ const sidebar: Side[] = [
   { label: "Dashboard", href: "/Dashboard" },
   { label: "Profile", href: "/profile" },
   { label: "KRRS", href: "/Krrs" },
+  { label: "KHS", href: "/KHS" },
   { label: "Akademik", href: "/akademik" },
   { label: "FAQ", href: "/faq" },
   { label: "Landpage", href: "/" },

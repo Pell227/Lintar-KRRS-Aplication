@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "../components/themeprovider";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -30,6 +31,9 @@ type FieldProps = {
 };
 
 function Field({ label, name, value, onChange, type = "text" }: FieldProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
     <label className="flex flex-col gap-1 text-sm font-semibold">
       {label}
@@ -38,7 +42,11 @@ function Field({ label, name, value, onChange, type = "text" }: FieldProps) {
         name={name}
         value={value}
         onChange={onChange}
-        className="rounded-lg border-2 border-black bg-white px-3 py-2 font-normal"
+        className={`rounded-lg border-2 px-3 py-2 font-normal ${
+          isDark
+            ? "border-white/40 bg-[#222831] text-white [color-scheme:dark]"
+            : "border-black bg-white text-black"
+        }`}
       />
     </label>
   );
@@ -65,8 +73,9 @@ export default function EditProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
-  // ambil data lama dari database
   useEffect(() => {
     fetch(`/api/profile?nim=${NIM_AKTIF}`)
       .then((r) => r.json())
@@ -126,10 +135,18 @@ export default function EditProfilePage() {
   if (loading) return <p className="p-8">Memuat data...</p>;
 
   return (
-    <main className="min-h-screen bg-[#F5ECEC] p-8">
+    <main
+      className={`min-h-screen p-8 transition-colors ${
+        isDark ? "bg-[#222831]" : "bg-[#F5ECEC]"
+      }`}
+    >
       <form
         onSubmit={simpan}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-2xl border-2 border-black bg-white p-6"
+        className={`mx-auto flex max-w-2xl flex-col gap-4 rounded-2xl border-2 p-6 ${
+          isDark
+            ? "border-white/40 bg-[#31363F] text-white"
+            : "border-black bg-white text-black"
+        }`}
       >
         <h1 className="font-serif text-2xl uppercase">Edit Profile</h1>
 
@@ -138,7 +155,11 @@ export default function EditProfilePage() {
           <input
             value={NIM_AKTIF}
             disabled
-            className="rounded-lg border-2 border-black/30 bg-gray-100 px-3 py-2 font-normal"
+            className={`rounded-lg border-2 px-3 py-2 font-normal ${
+              isDark
+                ? "border-white/20 bg-white/10 text-white/60"
+                : "border-black/30 bg-gray-100"
+            }`}
           />
         </label>
 
@@ -208,7 +229,13 @@ export default function EditProfilePage() {
           onChange={ubah}
         />
 
-        {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
+        {error && (
+          <p
+            className={`text-sm font-semibold ${isDark ? "text-red-300" : "text-red-600"}`}
+          >
+            {error}
+          </p>
+        )}
 
         <div className="mt-2 flex gap-3">
           <button
@@ -220,7 +247,11 @@ export default function EditProfilePage() {
           </button>
           <Link
             href="/profile"
-            className="rounded-full border-2 border-black bg-white px-6 py-2 font-semibold"
+            className={`rounded-full border-2 px-6 py-2 font-semibold ${
+              isDark
+                ? "border-white/40 bg-[#222831] text-white hover:bg-[#454C56]"
+                : "border-black bg-white text-black"
+            }`}
           >
             Batal
           </Link>
