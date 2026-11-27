@@ -1,94 +1,142 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
+interface FAQ {
+  _id: string;
+  pertanyaan: string;
+  jawaban: string;
+  kategori: string;
+  aktif: boolean;
+  urutan: number;
+}
+
 export default function FAQAccordion() {
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const [faqData, setFaqData] = useState<FAQ[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const faqData = [
-    {
-      id: 1,
-      pertanyaan: "Apa itu Lintar KRRS?",
-      jawaban:
-        "Lintar KRRS merupakan sistem informasi akademik yang digunakan mahasiswa untuk mengakses berbagai layanan akademik."
-    },
-    {
-      id: 2,
-      pertanyaan: "Bagaimana cara mengisi KRRS?",
-      jawaban:
-        "Mahasiswa dapat mengisi KRRS melalui sistem akademik sesuai periode pengisian yang telah ditentukan."
-    },
-    {
-      id: 3,
-      pertanyaan: "Apa yang harus dilakukan jika mata kuliah tidak muncul?",
-      jawaban:
-        "Mahasiswa dapat menghubungi bagian akademik atau dosen wali untuk mendapatkan bantuan."
-    },
-    {
-      id: 4,
-      pertanyaan: "Bagaimana cara mengetahui jadwal perkuliahan?",
-      jawaban:
-        "Mahasiswa dapat melihat jadwal perkuliahan melalui menu Jadwal pada sistem akademik."
-    },
-    {
-      id: 5,
-      pertanyaan: "Siapa yang dapat dihubungi jika mengalami kendala?",
-      jawaban:
-        "Mahasiswa dapat menghubungi bagian akademik atau dosen wali sesuai dengan permasalahan yang dialami."
-    }
-  ];
+  useEffect(() => {
+    const fetchFAQ = async () => {
+      try {
+        const response = await fetch("/api/faq");
 
-  const toggleFAQ = (id: number) => {
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data FAQ");
+        }
+
+        const data: FAQ[] = await response.json();
+        setFaqData(data);
+      } catch (err) {
+        console.error("Error fetching FAQ:", err);
+        setError("FAQ gagal dimuat. Silakan coba kembali.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFAQ();
+  }, []);
+
+  const toggleFAQ = (id: string) => {
     setActiveId(activeId === id ? null : id);
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="py-10 text-center text-foreground/70">
+        Memuat FAQ...
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="py-10 text-center text-red-500">
+        {error}
+      </div>
+    );
+  }
+
+  // Group FAQ berdasarkan kategori
+  const groupedFAQ = faqData.reduce<Record<string, FAQ[]>>(
+    (groups, faq) => {
+      if (!groups[faq.kategori]) {
+        groups[faq.kategori] = [];
+      }
+
+      groups[faq.kategori].push(faq);
+      return groups;
+    },
+    {}
+  );
+
   return (
-    <div className="space-y-4">
-      {faqData.map((faq) => (
-        <motion.div
-          key={faq.id}
-          layout
-          className="overflow-hidden rounded-xl border border-border-color bg-surface shadow-sm transition-colors duration-200"
-        >
-          <button
-            onClick={() => toggleFAQ(faq.id)}
-            className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-background"
-          >
-            <span className="font-semibold text-foreground">
-              {faq.pertanyaan}
+    <div className="space-y-8">
+      {Object.entries(groupedFAQ).map(([kategori, faqs]) => (
+        <section key={kategori} className="space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="rounded-lg border border-[#D72323]/20 bg-[#D72323]/10 px-4 py-2 text-sm font-bold tracking-wide text-[#D72323] dark:border-[#76ABAE]/20 dark:bg-[#76ABAE]/10 dark:text-[#76ABAE]">
+              {kategori}
             </span>
 
-            <motion.span
-              animate={{ rotate: activeId === faq.id ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-              className="text-xl font-bold text-[#D72323] dark:text-[#76ABAE]"
-            >
-              {activeId === faq.id ? "−" : "+"}
-            </motion.span>
-          </button>
+            <div className="h-px flex-1 bg-border-color" />
+          </div>
 
-          <AnimatePresence initial={false}>
-            {activeId === faq.id && (
+          <div className="space-y-4">
+            {faqs.map((faq) => (
               <motion.div
-                key="answer"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{
-                  duration: 0.3,
-                  ease: "easeInOut"
-                }}
-                className="overflow-hidden"
+                key={faq._id}
+                layout
+                className="overflow-hidden rounded-xl border border-border-color bg-surface shadow-sm transition-colors duration-200"
               >
-                <div className="border-t border-border-color px-5 pb-5 pt-4 text-foreground/70">
-                  {faq.jawaban}
-                </div>
+                <button
+                  onClick={() => toggleFAQ(faq._id)}
+                  className="flex w-full items-center justify-between p-5 text-left transition-colors duration-200 hover:bg-[#F4C2C2] dark:hover:bg-[#354B52]"
+                >
+                  <span className="font-semibold text-foreground">
+                    {faq.pertanyaan}
+                  </span>
+
+                  <motion.span
+                    animate={{
+                      rotate: activeId === faq._id ? 180 : 0,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="text-xl font-bold text-[#D72323] dark:text-[#76ABAE]"
+                  >
+                    {activeId === faq._id ? "−" : "+"}
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {activeId === faq._id && (
+                    <motion.div
+                      key="answer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{
+                        duration: 0.3,
+                        ease: "easeInOut",
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border-t border-border-color px-5 pb-5 pt-4 text-foreground/70">
+                        {faq.jawaban}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+            ))}
+          </div>
+        </section>
       ))}
     </div>
   );
