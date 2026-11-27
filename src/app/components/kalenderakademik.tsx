@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Category =
     | "administrasi"
@@ -13,116 +12,14 @@ type Category =
     | "wisuda";
 
 type AcademicEvent = {
-    mulai: string;
-    selesai: string;
-    nama: string;
+    _id?: string;
+    tanggalMulai: string;
+    tanggalSelesai: string;
+    judul: string;
     kategori: Category;
+    deskripsi?: string;
+    semester?: string;
 };
-
-const academicEvents: AcademicEvent[] = [
-    {
-        mulai: "2026-06-08",
-        selesai: "2026-07-17",
-        nama: "Pengajuan Permohonan Pindah Semester Ganjil 2026/2027",
-        kategori: "administrasi",
-    },
-    {
-        mulai: "2026-06-08",
-        selesai: "2026-07-17",
-        nama: "Pengajuan Permohonan Aktif Kuliah Kembali Semester Ganjil 2026/2027",
-        kategori: "administrasi",
-    },
-    {
-        mulai: "2026-06-08",
-        selesai: "2026-07-09",
-        nama: "Pembayaran BPP (kelas Pagi) Semester Ganjil 2026/2027",
-        kategori: "pembayaran",
-    },
-    {
-        mulai: "2026-06-09",
-        selesai: "2026-07-09",
-        nama: "Pembayaran Uang Kuliah Tunggal/UKT (kelas sore) Semester Ganjil 2026/2027",
-        kategori: "pembayaran",
-    },
-    {
-        mulai: "2026-07-20",
-        selesai: "2026-08-14",
-        nama: "Pengajuan Permohonan Cuti Akademik Semester Ganjil 2026/2027",
-        kategori: "administrasi",
-    },
-    {
-        mulai: "2026-07-20",
-        selesai: "2026-08-07",
-        nama: "Rencana Registrasi Studi/Perbaikan (RRS) Semester Ganjil 2026/2027",
-        kategori: "registrasi",
-    },
-    {
-        mulai: "2026-08-18",
-        selesai: "2026-10-02",
-        nama: "Proses Pembelajaran Sebelum UTS",
-        kategori: "pembelajaran",
-    },
-    {
-        mulai: "2026-08-18",
-        selesai: "2026-10-02",
-        nama: "Permohonan Dispensasi Cuti Akademik Semester Ganjil 2026/2027",
-        kategori: "administrasi",
-    },
-    {
-        mulai: "2026-08-25",
-        selesai: "2026-09-23",
-        nama: "Pembayaran SKS (kls pagi) Semester Ganjil 2026/2027",
-        kategori: "pembayaran",
-    },
-    {
-        mulai: "2026-09-28",
-        selesai: "2026-10-02",
-        nama: "Cetak Kartu Studi Mahasiswa (KSM)",
-        kategori: "registrasi",
-    },
-    {
-        mulai: "2026-10-05",
-        selesai: "2026-10-09",
-        nama: "Ujian Tengah Semester (UTS) Semester Ganjil 2026/2027",
-        kategori: "ujian",
-    },
-    {
-        mulai: "2026-10-12",
-        selesai: "2026-11-27",
-        nama: "Proses Pembelajaran Setelah UTS",
-        kategori: "pembelajaran",
-    },
-    {
-        mulai: "2026-11-30",
-        selesai: "2026-12-11",
-        nama: "Ujian Akhir Semester (UAS) Semester Ganjil 2026/2027",
-        kategori: "ujian",
-    },
-    {
-        mulai: "2026-12-02",
-        selesai: "2026-12-17",
-        nama: "Remedial",
-        kategori: "akademik",
-    },
-    {
-        mulai: "2027-01-04",
-        selesai: "2027-01-04",
-        nama: "Hasil Studi dan Yudisium",
-        kategori: "akademik",
-    },
-    {
-        mulai: "2027-03-15",
-        selesai: "2027-04-25",
-        nama: "Pendaftaran Wisuda",
-        kategori: "wisuda",
-    },
-    {
-        mulai: "2027-05-15",
-        selesai: "2027-05-15",
-        nama: "Pelaksanaan Wisuda",
-        kategori: "wisuda",
-    },
-];
 
 const categoryInfo: Record<
     Category,
@@ -158,6 +55,15 @@ const categoryInfo: Record<
     },
 };
 
+function getCategoryInfo(value: string) {
+    const normalized = value?.toLowerCase().trim() as Category;
+
+    return categoryInfo[normalized] ?? {
+        label: value || "Kategori Lainnya",
+        color: "#6B7280",
+    };
+}
+
 function parseDate(value: string) {
     const [year, month, day] = value.split("-").map(Number);
     return new Date(year, month - 1, day);
@@ -174,6 +80,29 @@ function formatDate(value: string) {
 export default function KalenderAkademik() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [academicEvents, setAcademicEvents] = useState<AcademicEvent[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchEvents() {
+            try {
+                const response = await fetch("/api/kalenderakademik");
+
+                if (!response.ok) {
+                    throw new Error("Gagal mengambil data kalender akademik");
+                }
+
+                const data = await response.json();
+                setAcademicEvents(data);
+            } catch (error) {
+                console.error("Error mengambil kalender akademik:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchEvents();
+    }, []);
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -212,8 +141,8 @@ export default function KalenderAkademik() {
         const date = new Date(year, month, day);
 
         return academicEvents.filter((event) => {
-            const start = parseDate(event.mulai);
-            const end = parseDate(event.selesai);
+            const start = parseDate(event.tanggalMulai);
+            const end = parseDate(event.tanggalSelesai);
 
             return date >= start && date <= end;
         });
@@ -221,20 +150,17 @@ export default function KalenderAkademik() {
 
     const selectedEvents = selectedDate
         ? academicEvents.filter((event) => {
-            const start = parseDate(event.mulai);
-            const end = parseDate(event.selesai);
+            const start = parseDate(event.tanggalMulai);
+            const end = parseDate(event.tanggalSelesai);
 
             return selectedDate >= start && selectedDate <= end;
         })
         : [];
-
     return (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
-            {/* Kalender Bulanan */}
             <div className="rounded-xl border border-border-color bg-surface p-5 shadow-sm transition-colors duration-200 lg:col-span-2">
 
-                {/* Header */}
                 <div className="mb-6 flex items-center justify-between gap-3">
                     <div>
                         <h2 className="text-xl font-bold text-foreground">
@@ -265,7 +191,6 @@ export default function KalenderAkademik() {
                     </div>
                 </div>
 
-                {/* Nama Hari */}
                 <div className="grid grid-cols-7 gap-2 text-center">
                     {dayNames.map((day) => (
                         <div
@@ -276,7 +201,6 @@ export default function KalenderAkademik() {
                         </div>
                     ))}
 
-                    {/* Tanggal */}
                     {calendarDays.map((day, index) => {
                         if (day === null) {
                             return <div key={`empty-${index}`} />;
@@ -296,10 +220,10 @@ export default function KalenderAkademik() {
                                     setSelectedDate(new Date(year, month, day))
                                 }
                                 className={`flex min-h-14 flex-col items-center justify-center rounded-lg p-1 transition-colors ${isSelected
-                                        ? "bg-accent text-white"
-                                        : events.length > 0
-                                            ? "bg-red-50 text-foreground hover:bg-red-100 dark:bg-[#222831] dark:hover:bg-[#454C56]"
-                                            : "bg-background text-foreground hover:bg-accent/20"
+                                    ? "bg-accent text-white"
+                                    : events.length > 0
+                                        ? "bg-red-50 text-foreground hover:bg-red-100 dark:bg-[#222831] dark:hover:bg-[#454C56]"
+                                        : "bg-background text-foreground hover:bg-accent/20"
                                     }`}
                             >
                                 <span
@@ -317,7 +241,7 @@ export default function KalenderAkademik() {
                                                 key={eventIndex}
                                                 className="h-1.5 w-1.5 rounded-full"
                                                 style={{
-                                                    backgroundColor: categoryInfo[event.kategori].color,
+                                                    backgroundColor: getCategoryInfo(event.kategori).color,
                                                 }}
                                             />
                                         ))}
@@ -328,7 +252,6 @@ export default function KalenderAkademik() {
                     })}
                 </div>
 
-                {/* Legend */}
                 <div className="mt-5 border-t border-border-color pt-4">
                     <h4 className="mb-3 text-sm font-bold text-foreground">
                         Keterangan Agenda
@@ -354,7 +277,6 @@ export default function KalenderAkademik() {
                 </div>
             </div>
 
-            {/* Detail Agenda */}
             <div className="rounded-xl border border-border-color bg-surface p-5 shadow-sm transition-colors duration-200">
                 <h3 className="text-lg font-bold text-foreground">
                     Detail Agenda
@@ -379,7 +301,7 @@ export default function KalenderAkademik() {
                         {selectedEvents.length > 0 ? (
                             <div className="mt-4 space-y-3">
                                 {selectedEvents.map((event, index) => {
-                                    const category = categoryInfo[event.kategori];
+                                    const category = getCategoryInfo(event.kategori);
 
                                     return (
                                         <div
@@ -406,11 +328,11 @@ export default function KalenderAkademik() {
                                             </div>
 
                                             <h4 className="text-sm font-bold text-foreground">
-                                                {event.nama}
+                                                {event.judul}
                                             </h4>
 
                                             <p className="mt-2 text-xs leading-relaxed text-secondary-text">
-                                                {formatDate(event.mulai)} – {formatDate(event.selesai)}
+                                                {formatDate(event.tanggalMulai)} – {formatDate(event.tanggalSelesai)}
                                             </p>
                                         </div>
                                     );
