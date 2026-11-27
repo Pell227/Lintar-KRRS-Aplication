@@ -1,11 +1,12 @@
+
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
 export default function FAQAccordion() {
   const [activeId, setActiveId] = useState<number | null>(null);
 
-  // Data FAQ sementara
   const faqData = [
     {
       id: 1,
@@ -46,29 +47,48 @@ export default function FAQAccordion() {
   return (
     <div className="space-y-4">
       {faqData.map((faq) => (
-        <div
+        <motion.div
           key={faq.id}
-          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+          layout
+          className="overflow-hidden rounded-xl border border-border-color bg-surface shadow-sm transition-colors duration-200"
         >
           <button
             onClick={() => toggleFAQ(faq.id)}
-            className="w-full flex justify-between items-center p-5 text-left"
+            className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-background"
           >
-            <span className="font-semibold text-gray-800">
+            <span className="font-semibold text-foreground">
               {faq.pertanyaan}
             </span>
 
-            <span className="text-xl font-bold text-[#D72323]">
+            <motion.span
+              animate={{ rotate: activeId === faq.id ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-xl font-bold text-[#D72323] dark:text-[#76ABAE]"
+            >
               {activeId === faq.id ? "−" : "+"}
-            </span>
+            </motion.span>
           </button>
 
-          {activeId === faq.id && (
-            <div className="px-5 pb-5 text-gray-600 border-t border-gray-100 pt-4">
-              {faq.jawaban}
-            </div>
-          )}
-        </div>
+          <AnimatePresence initial={false}>
+            {activeId === faq.id && (
+              <motion.div
+                key="answer"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{
+                  duration: 0.3,
+                  ease: "easeInOut"
+                }}
+                className="overflow-hidden"
+              >
+                <div className="border-t border-border-color px-5 pb-5 pt-4 text-foreground/70">
+                  {faq.jawaban}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       ))}
     </div>
   );
