@@ -6,8 +6,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 
 const kolom = [
   { name: "Nama", label: "Nama lengkap", type: "text", hint: "Sesuai KTM" },
-  { name: "NIM", label: "NIM", type: "text", hint: "9 digit angka" },
-  { name: "Email", label: "Email", type: "email", hint: "nama@email.com" },
+  { name: "NIM", label: "NIM", type: "text", hint: "9 atau 13 digit angka" },
   {
     name: "Password",
     label: "Password",
@@ -19,18 +18,18 @@ const kolom = [
 
 const labelClass = "mb-1.5 block text-sm font-medium text-slate-700";
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-800 outline-none placeholder:text-slate-500 focus:border-[#ab1509] focus:ring-2 focus:ring-[#ab1509]/15 sm:text-sm";
+  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-800 outline-none placeholder:text-slate-500 focus:border-[#D72323] focus:ring-2 focus:ring-[#D72323]/15 sm:text-sm";
 
 export default function Register() {
   const [form, setForm] = useState({
     Nama: "",
     NIM: "",
-    Email: "",
     Password: "",
     Ulangi: "",
   });
   const [error, setError] = useState("");
   const [sukses, setSukses] = useState(false);
+  const [emailBaru, setEmailBaru] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -55,7 +54,6 @@ export default function Register() {
         body: JSON.stringify({
           Nama: form.Nama,
           NIM: form.NIM,
-          Email: form.Email,
           Password: form.Password,
         }),
       });
@@ -66,6 +64,7 @@ export default function Register() {
         return;
       }
 
+      setEmailBaru(data.Email);
       setSukses(true);
     } catch {
       setError("Tidak bisa menghubungi server. Coba lagi.");
@@ -75,7 +74,7 @@ export default function Register() {
   }
 
   return (
-    <div className="scheme-light fixed inset-0 z-60 overflow-y-auto bg-[linear-gradient(115deg,#5c0b06_0%,#7c1009_35%,#ab1509_75%,#c52a1d_100%)] text-slate-800">
+    <div className="scheme-light fixed inset-0 z-60 overflow-y-auto bg-[linear-gradient(115deg,#5c0b06_0%,#7c1009_55%,#D72323_100%)] text-slate-800">
       <div className="relative flex min-h-full items-center justify-center overflow-hidden px-4 py-10">
         <Image
           src="/pngwing.com.png"
@@ -104,7 +103,7 @@ export default function Register() {
                 loading="eager"
                 className="h-10 w-auto"
               />
-              <span className="text-2xl font-bold text-[#ab1509]">Lintar</span>
+              <span className="text-2xl font-bold text-[#D72323]">Lintar</span>
             </div>
 
             <h1 className="mt-6 text-2xl font-bold text-slate-900">
@@ -113,13 +112,14 @@ export default function Register() {
 
             {sukses ? (
               <div className="mt-4 space-y-5">
-                <p role="status" className="text-sm text-slate-700">
-                  Akun berhasil dibuat. Sekarang kamu bisa masuk dengan NIM dan
+                <p role="status" className="break-words text-sm text-slate-700">
+                  Akun berhasil dibuat. Masuk dengan email{" "}
+                  <span className="font-semibold">{emailBaru}</span> dan
                   password tadi.
                 </p>
                 <Link
                   href="/auth/login"
-                  className="block w-full rounded-lg bg-[#ab1509] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#861007]"
+                  className="block w-full rounded-lg bg-[#D72323] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#861007]"
                 >
                   Masuk sekarang
                 </Link>
@@ -127,7 +127,12 @@ export default function Register() {
             ) : (
               <>
                 <p className="mt-2 text-sm text-slate-600">
-                  Isi data di bawah, lalu masuk dengan NIM kamu.
+                  Isi data di bawah. Email untuk masuk dibuat otomatis dari nama
+                  depan dan NIM, misalnya{" "}
+                  <span className="font-semibold">
+                    nama.nim@stu.untar.ac.id
+                  </span>
+                  .
                 </p>
 
                 <form
@@ -168,7 +173,7 @@ export default function Register() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-lg bg-[#ab1509] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#861007] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="w-full rounded-lg bg-[#D72323] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#861007] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {loading ? "Membuat akun..." : "Buat akun"}
                   </button>

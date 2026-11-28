@@ -6,6 +6,7 @@ const gagal = (error: string, status = 400) =>
   NextResponse.json({ error }, { status });
 
 const galat = "Server sedang bermasalah. Coba lagi sebentar lagi.";
+const domain = "@stu.untar.ac.id";
 
 export async function POST(req: Request) {
   try {
@@ -14,26 +15,31 @@ export async function POST(req: Request) {
     const body = await req.json();
     const Nama = teks(body.Nama).trim();
     const NIM = teks(body.NIM).trim();
-    const Email = teks(body.Email).trim().toLowerCase();
     const Password = teks(body.Password);
 
-    if (!Nama || !NIM || !Email || !Password) {
+    if (!Nama || !NIM || !Password) {
       return gagal("Semua kolom wajib diisi.");
     }
-    if (!/^\d{9}$/.test(NIM)) return gagal("NIM harus 9 digit angka.");
-    if (!/^\S+@\S+\.\S+$/.test(Email)) {
-      return gagal("Format email belum benar.");
+    if (!/^(\d{9}|\d{13})$/.test(NIM)) {
+      return gagal("NIM harus 9 atau 13 digit angka.");
     }
     if (Password.length < 8 || Password.length > 64) {
       return gagal("Password harus 8 sampai 64 karakter.");
     }
+
+
+    const depan = Nama.split(/\s+/)[0]
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+    if (!depan) return gagal("Nama depan harus berisi huruf.");
+    const Email = `${depan}.${NIM}${domain}`;
 
     const sudahAda = await Akun.findOne({ $or: [{ NIM }, { Email }] });
     if (sudahAda) return gagal("NIM atau email sudah terdaftar.", 409);
 
     await Akun.create({ Nama, NIM, Email, Password: buatHash(Password) });
     return NextResponse.json(
-      { pesan: "Akun berhasil dibuat." },
+      { pesan: "Akun berhasil dibuat.", Email },
       { status: 201 },
     );
   } catch (err) {

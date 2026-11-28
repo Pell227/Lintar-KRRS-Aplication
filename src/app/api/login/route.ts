@@ -10,14 +10,14 @@ export async function POST(req: Request) {
     await connectDB();
 
     const body = await req.json();
-    const NIM = teks(body.NIM).trim();
+    const Email = teks(body.Email).trim().toLowerCase();
     const Password = teks(body.Password);
 
-    if (!NIM || !Password) return gagal("NIM dan password wajib diisi.");
+    if (!Email || !Password) return gagal("Email dan password wajib diisi.");
 
-    const data = await Akun.findOne({ NIM });
+    const data = await Akun.findOne({ Email });
     if (!data || !cekPassword(Password, data.Password)) {
-      return gagal("NIM atau password salah.", 401);
+      return gagal("Email atau password salah.", 401);
     }
 
     return NextResponse.json({ NIM: data.NIM, Nama: data.Nama });
