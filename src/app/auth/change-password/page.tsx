@@ -11,9 +11,9 @@ const kolom = [
 
 const kosong = { PasswordLama: "", PasswordBaru: "", Ulangi: "" };
 
-const labelClass = "mb-1.5 block text-sm font-medium text-slate-700";
+const labelClass = "mb-1.5 block text-sm font-medium text-[#3E3636]";
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-800 outline-none placeholder:text-slate-500 focus:border-[#ab1509] focus:ring-2 focus:ring-[#ab1509]/15 sm:text-sm";
+  "w-full rounded-lg border border-[#3E3636]/60 bg-white px-3.5 py-2.5 text-base text-[#3E3636] outline-none placeholder:text-[#3E3636]/70 focus:border-[#D72323] focus:ring-2 focus:ring-[#D72323]/15 sm:text-sm";
 
 export default function GantiPassword() {
   const router = useRouter();
@@ -82,9 +82,9 @@ export default function GantiPassword() {
   if (!user) return null;
 
   return (
-    <div className="mx-auto max-w-md rounded-2xl border-t-4 border-[#ab1509] bg-white p-6 text-slate-800 shadow-lg sm:p-8">
-      <h1 className="text-2xl font-bold text-slate-900">Ganti Password</h1>
-      <p className="mt-2 break-words text-sm text-slate-600">
+    <div className="mx-auto max-w-md rounded-2xl border-t-4 border-[#D72323] bg-white p-6 text-[#3E3636] shadow-lg sm:p-8">
+      <h1 className="text-2xl font-bold text-black">Ganti Password</h1>
+      <p className="mt-2 break-words text-sm text-[#3E3636]">
         Masuk sebagai {user.Nama} ({user.NIM})
       </p>
 
@@ -92,7 +92,7 @@ export default function GantiPassword() {
         {error && (
           <p
             role="alert"
-            className="rounded-lg bg-red-50 px-3.5 py-2.5 text-sm text-[#861007]"
+            className="rounded-lg border border-[#D72323] bg-white px-3.5 py-2.5 text-sm text-[#D72323]"
           >
             {error}
           </p>
@@ -100,9 +100,9 @@ export default function GantiPassword() {
         {sukses && (
           <p
             role="status"
-            className="rounded-lg border border-[#ab1509]/25 px-3.5 py-2.5 text-sm text-slate-800"
+            className="rounded-lg border border-[#3E3636]/25 bg-[#F5EDED] px-3.5 py-2.5 text-sm text-[#3E3636]"
           >
-            <span className="font-bold text-[#ab1509]">✓</span> {sukses}
+            <span className="font-bold text-[#3E3636]">✓</span> {sukses}
           </p>
         )}
 
@@ -128,7 +128,7 @@ export default function GantiPassword() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-[#ab1509] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#861007] disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg bg-[#D72323] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3E3636] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? "Menyimpan..." : "Simpan password baru"}
         </button>
