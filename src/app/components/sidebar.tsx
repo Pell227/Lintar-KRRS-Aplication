@@ -19,7 +19,7 @@ const sidebar: Side[] = [
     icon: "fa-solid fa-tachograph-digital",
   },
   { label: "Profile", href: "/profile", icon: "fa-regular fa-circle-user" },
-  { label: "KRRS", href: "/Krrs", icon: "fa-solid fa-book-open" },
+  { label: "KRRS", href: "/krrs", icon: "fa-solid fa-book-open" },
   { label: "KHS", href: "/KHS", icon: "fa-regular fa-id-card" },
   { label: "Kalender", href: "/akademik", icon: "fa-solid fa-calendar" },
   { label: "FAQ", href: "/faq", icon: "fa-solid fa-question" },

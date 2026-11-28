@@ -3,51 +3,143 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "../components/themeprovider";
 
 const courses = [
-  { id: "IF301", name: "Basis Data", sks: 4, dosen: "Dr. Budi Santoso" },
+  {
+    id: "IF301",
+    name: "Basis Data",
+    sks: 4,
+    kelas: "A",
+    jadwal: [
+      {
+        waktu: "Senin, 07.30–09.10",
+        ruang: "R. 301",
+      },
+      {
+        waktu: "Senin, 09.30–11.10",
+        ruang: "R. 301",
+      },
+    ],
+  },
   {
     id: "IF302",
     name: "Pemrograman Web",
-    sks: 4,
-    dosen: "Rina Kartika, M.Kom.",
+    sks: 2,
+    kelas: "B",
+    jadwal: [
+      {
+        waktu: "Selasa, 10.00–11.40",
+        ruang: "Lab. Pemrograman 2",
+      },
+    ],
   },
   {
     id: "IF303",
     name: "Rekayasa Perangkat Lunak",
-    sks: 2,
-    dosen: "Andi Pratama, M.T.",
+    sks: 4,
+    kelas: "A",
+    jadwal: [
+      {
+        waktu: "Rabu, 13.00–14.40",
+        ruang: "R. 205",
+      },
+      {
+        waktu: "Rabu, 15.00–16.40",
+        ruang: "R. 205",
+      },
+    ],
   },
   {
     id: "IF304",
     name: "Jaringan Komputer",
     sks: 4,
-    dosen: "Dewi Lestari, M.Kom.",
+    kelas: "B",
+    jadwal: [
+      {
+        waktu: "Kamis, 07.30–09.10",
+        ruang: "Lab. Jaringan 1",
+      },
+      {
+        waktu: "Kamis, 09.30–11.10",
+        ruang: "Lab. Jaringan 1",
+      },
+    ],
   },
   {
     id: "MKU201",
     name: "Bahasa Inggris",
+    sks: 4,
+    kelas: "A",
+    jadwal: [
+      {
+        waktu: "Jumat, 09.30–11.10",
+        ruang: "R. 402",
+      },
+      {
+        waktu: "Jumat, 11.30–13.10",
+        ruang: "R. 402",
+      },
+    ],
+  },
+  {
+    id: "IF305",
+    name: "Struktur Data",
     sks: 2,
-    dosen: "Sarah Wijaya, M.Pd.",
+    kelas: "A",
+    jadwal: [
+      {
+        waktu: "Senin, 13.00–14.40",
+        ruang: "Lab. Komputer 1",
+      },
+    ],
   },
 ];
 
+const MIN_CREDITS = 20;
 const MAX_CREDITS = 24;
 const STORAGE_KEY = "lintar-krrs-selected";
 
 export default function Krrs() {
   const router = useRouter();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const [selected, setSelected] = useState<string[]>([
     "IF301",
     "IF302",
   ]);
+
   const [error, setError] = useState("");
   const [loaded, setLoaded] = useState(false);
 
   const totalCredits = courses
     .filter((course) => selected.includes(course.id))
     .reduce((total, course) => total + course.sks, 0);
+
+  const cardStyle = isDark
+    ? "border-white/10 bg-white/5"
+    : "border-black/10 bg-white";
+
+  const mutedText = isDark
+    ? "text-white"
+    : "text-black/60";
+
+  const mainText = isDark
+    ? "text-white"
+    : "text-black";
+
+  const borderStyle = isDark
+    ? "border-white/10"
+    : "border-black/10";
+
+  const tableHeader = isDark
+    ? "bg-[#252B35] text-white/80"
+    : "bg-[#F3F4F6] text-[#374151]";
+
+  const hoverStyle = isDark
+    ? "hover:bg-white/5"
+    : "hover:bg-[#f5eded]";
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -65,9 +157,14 @@ export default function Krrs() {
           let credits = 0;
 
           for (const id of validIds) {
-            const course = courses.find((item) => item.id === id);
+            const course = courses.find(
+              (item) => item.id === id
+            );
 
-            if (course && credits + course.sks <= MAX_CREDITS) {
+            if (
+              course &&
+              credits + course.sks <= MAX_CREDITS
+            ) {
               validSelection.push(id);
               credits += course.sks;
             }
@@ -85,7 +182,10 @@ export default function Krrs() {
 
   useEffect(() => {
     if (loaded) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(selected)
+      );
     }
   }, [selected, loaded]);
 
@@ -97,7 +197,9 @@ export default function Krrs() {
         return current.filter((item) => item !== id);
       }
 
-      const course = courses.find((item) => item.id === id);
+      const course = courses.find(
+        (item) => item.id === id
+      );
 
       if (!course) return current;
 
@@ -107,8 +209,9 @@ export default function Krrs() {
 
       if (currentCredits + course.sks > MAX_CREDITS) {
         setError(
-          `Pengambilan mata kuliah melebihi batas maksimal ${MAX_CREDITS} SKS.`
+          "Total SKS Anda melebihi batas maksimal. Silakan kurangi mata kuliah yang dipilih."
         );
+
         return current;
       }
 
@@ -117,22 +220,45 @@ export default function Krrs() {
   }
 
   function continueToSummary() {
-    if (selected.length === 0) {
-      setError("Silakan pilih minimal satu mata kuliah.");
+    if (totalCredits < MIN_CREDITS) {
+      setError(
+        "Total SKS Anda belum memenuhi batas minimal. Silakan pilih mata kuliah tambahan."
+      );
+
       return;
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+    if (totalCredits > MAX_CREDITS) {
+      setError(
+        "Total SKS Anda melebihi batas maksimal. Silakan kurangi mata kuliah yang dipilih."
+      );
+
+      return;
+    }
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(selected)
+    );
 
     router.push("/krrs/sementara");
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10 text-slate-800 sm:px-8">
+    <main
+      className={`min-h-screen px-4 py-8 sm:px-8 ${mainText}`}
+    >
       <div className="mx-auto max-w-5xl">
 
         {/* Header */}
-        <header className="mb-8 rounded-2xl bg-[linear-gradient(115deg,#7c1009_0%,#ab1509_60%,#c52a1d_100%)] px-6 py-7 text-white shadow-lg shadow-[#ab1509]/20 sm:px-8">
+        <header
+          className="mb-8 rounded-2xl px-6 py-7 text-white shadow-lg sm:px-8"
+          style={{
+            background: isDark
+              ? "linear-gradient(to right, #2F578A, #121358)"
+              : "#D72323",
+          }}
+        >
           <p className="text-sm font-semibold uppercase tracking-wider text-white/80">
             Portal Akademik
           </p>
@@ -147,79 +273,116 @@ export default function Krrs() {
         </header>
 
         {/* Informasi Mahasiswa */}
-        <section className="mb-6 grid gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-lg shadow-black/5 sm:grid-cols-2">
+        <section
+          className={`mb-6 grid gap-4 rounded-xl border p-5 shadow-lg shadow-black/5 sm:grid-cols-2 ${cardStyle}`}
+        >
           <div>
-            <p className="text-sm text-slate-500">Mahasiswa</p>
-            <p className="mt-1 font-semibold">Windriew</p>
-            <p className="text-sm text-slate-600">535250168</p>
+            <p className={`text-sm ${mutedText}`}>
+              Mahasiswa
+            </p>
+
+            <p className="mt-1 font-semibold">
+              Azzarqy Fizran M Nasrun
+            </p>
+
+            <p className={`text-sm ${mutedText}`}>
+              535250161
+            </p>
           </div>
 
           <div>
-            <p className="text-sm text-slate-500">Semester Akademik</p>
-            <p className="mt-1 font-semibold text-slate-800">
+            <p className={`text-sm ${mutedText}`}>
+              Semester Akademik
+            </p>
+
+            <p className="mt-1 font-semibold">
               Ganjil 2026/2027
             </p>
           </div>
         </section>
 
         {/* Daftar Mata Kuliah */}
-        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-black/5">
+        <section
+          className={`overflow-hidden rounded-xl border shadow-xl shadow-black/5 ${cardStyle}`}
+        >
+          <div
+            className={`border-b px-5 py-4 ${borderStyle}`}
+          >
+            <h2 className="font-semibold">
+              Daftar Mata Kuliah
+            </h2>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eee4c7] px-5 py-4">
-            <div>
-              <h2 className="font-semibold">Daftar Mata Kuliah</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Pilih mata kuliah yang ingin diambil.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => router.push("/krrs/katalog")}
-                className="rounded-lg border border-[#ab1509] px-3 py-2 text-sm font-semibold text-[#ab1509] transition hover:bg-red-50"
-              >
-                Lihat Katalog →
-              </button>
-
-              <span className="rounded-full bg-red-50 px-3 py-1 text-sm font-medium text-[#ab1509]">
-                {selected.length} mata kuliah dipilih
-              </span>
-            </div>
+            <p className={`mt-1 text-sm ${mutedText}`}>
+              Pilih mata kuliah yang ingin diambil.
+            </p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[620px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-600">
+            <table className="w-full min-w-[1000px] text-left text-sm">
+              <thead className={tableHeader}>
                 <tr>
-                  <th className="w-14 px-5 py-3">Pilih</th>
-                  <th className="px-4 py-3">ID</th>
-                  <th className="px-4 py-3">Mata Kuliah</th>
-                  <th className="px-4 py-3">Dosen</th>
-                  <th className="px-5 py-3 text-right">SKS</th>
+                  <th className="w-14 px-5 py-3">
+                    Pilih
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Kode
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Mata Kuliah
+                  </th>
+
+                  <th className="px-4 py-3 text-center">
+                    SKS
+                  </th>
+
+                  <th className="px-4 py-3 text-center">
+                    Kelas
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Jadwal
+                  </th>
+
+                  <th className="px-4 py-3">
+                    Ruang
+                  </th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-100">
+              <tbody
+                className={`divide-y ${borderStyle}`}
+              >
                 {courses.map((course) => {
-                  const isSelected = selected.includes(course.id);
+                  const isSelected = selected.includes(
+                    course.id
+                  );
 
                   return (
                     <tr
                       key={course.id}
-                      className="transition hover:bg-slate-50"
+                      className={`transition ${hoverStyle}`}
                     >
                       <td className="px-5 py-4">
                         <input
                           aria-label={`Pilih ${course.name}`}
                           type="checkbox"
                           checked={isSelected}
-                          onChange={() => toggleCourse(course.id)}
-                          className="h-4 w-4 rounded border-slate-300 accent-[#ab1509]"
+                          onChange={() =>
+                            toggleCourse(course.id)
+                          }
+                          className={`h-4 w-4 rounded ${
+                            isDark
+                              ? "accent-[#2F578A]"
+                              : "accent-[#D72323]"
+                          }`}
                         />
                       </td>
 
-                      <td className="px-4 py-4 font-medium text-slate-600">
+                      <td
+                        className={`px-4 py-4 font-medium ${mutedText}`}
+                      >
                         {course.id}
                       </td>
 
@@ -227,12 +390,42 @@ export default function Krrs() {
                         {course.name}
                       </td>
 
-                      <td className="px-4 py-4 text-slate-600">
-                        {course.dosen}
+                      <td className="px-4 py-4 text-center">
+                        {course.sks}
                       </td>
 
-                      <td className="px-5 py-4 text-right">
-                        {course.sks}
+                      <td className="px-4 py-4 text-center">
+                        {course.kelas}
+                      </td>
+
+                      {/* Jadwal per sesi */}
+                      <td
+                        className={`px-4 py-4 ${mutedText}`}
+                      >
+                        <div className="flex flex-col gap-2 whitespace-nowrap">
+                          {course.jadwal.map(
+                            (sesi, index) => (
+                              <span key={index}>
+                                {sesi.waktu}
+                              </span>
+                            )
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Ruang per sesi */}
+                      <td
+                        className={`px-4 py-4 ${mutedText}`}
+                      >
+                        <div className="flex flex-col gap-2 whitespace-nowrap">
+                          {course.jadwal.map(
+                            (sesi, index) => (
+                              <span key={index}>
+                                {sesi.ruang}
+                              </span>
+                            )
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -243,59 +436,64 @@ export default function Krrs() {
 
           {/* Error Message */}
           {error && (
-            <div className="mx-5 mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div
+              role="alert"
+              className={`mx-5 mt-4 rounded-lg border px-4 py-3 text-sm ${
+                isDark
+                  ? "border-red-400/30 bg-red-400/10 text-red-300"
+                  : "border-red-200 bg-red-50 text-red-700"
+              }`}
+            >
               {error}
             </div>
           )}
 
           {/* Total SKS */}
-          <div className="border-t border-slate-200 bg-slate-50 px-5 py-4">
+          <div
+            className={`border-t px-5 py-4 ${borderStyle}`}
+          >
+            <div className="mb-4">
+              <p className={`text-sm ${mutedText}`}>
+                Total SKS
+              </p>
 
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-sm text-slate-600">
-                  Batas pengambilan semester ini
-                </p>
-                <p className="font-semibold">24 SKS</p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-sm text-slate-600">Total SKS</p>
-
-                <p
-                  className={`text-2xl font-bold ${
-                    totalCredits >= MAX_CREDITS
-                      ? "text-red-700"
-                      : "text-slate-900"
-                  }`}
-                >
-                  {totalCredits} / {MAX_CREDITS} SKS
-                </p>
-              </div>
+              <p className="text-2xl font-bold">
+                {totalCredits} SKS
+              </p>
             </div>
 
             {/* Progress Bar */}
-            <div className="mb-5 h-2 overflow-hidden rounded-full bg-slate-200">
+            <div
+              className={`mb-5 h-2 overflow-hidden rounded-full ${
+                isDark ? "bg-white/10" : "bg-black/10"
+              }`}
+            >
               <div
-                className="h-full rounded-full bg-[#ab1509] transition-all duration-300"
+                className="h-full rounded-full transition-all duration-300"
                 style={{
-                  width: `${(totalCredits / MAX_CREDITS) * 100}%`,
+                  width: `${Math.min(
+                    (totalCredits / MAX_CREDITS) * 100,
+                    100
+                  )}%`,
+                  backgroundColor: isDark
+                    ? "#35649A"
+                    : "#D72323",
                 }}
               />
             </div>
 
             {/* Action */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-slate-600">
-                Sisa kuota:{" "}
-                <strong>{MAX_CREDITS - totalCredits} SKS</strong>
-              </p>
-
+            <div className="flex justify-end">
               <button
                 type="button"
                 onClick={continueToSummary}
-                disabled={selected.length === 0 || !loaded}
-                className="rounded-lg bg-[#ab1509] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#861007] disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={!loaded}
+                className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                style={{
+                  backgroundColor: isDark
+                    ? "#2F578A"
+                    : "#D72323",
+                }}
               >
                 Lanjutkan ke KRRS Sementara →
               </button>
