@@ -20,6 +20,7 @@ const sidebar: Side[] = [
   },
   { label: "Profile", href: "/profile", icon: "fa-regular fa-circle-user" },
   { label: "KRRS", href: "/krrs", icon: "fa-solid fa-book-open" },
+  { label: "Katalog", href: "/katalog", icon: "fa-solid fa-book" },
   { label: "KHS", href: "/KHS", icon: "fa-regular fa-id-card" },
   { label: "Kalender", href: "/akademik", icon: "fa-solid fa-calendar" },
   { label: "FAQ", href: "/faq", icon: "fa-solid fa-question" },
@@ -107,7 +108,6 @@ export default function Sidebar() {
           >
             <span className="flex min-w-0 items-center gap-2 text-sm font-medium">
               <span className="shrink-0">{isDark ? "🌙" : "☀️"}</span>
-
               <span className="truncate">
                 {isDark ? "Dark Mode" : "Light Mode"}
               </span>
