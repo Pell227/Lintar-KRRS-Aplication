@@ -34,7 +34,7 @@ export default function GantiPassword() {
         localStorage.removeItem("lintar-user");
       }
     }
-    router.push("login");
+    router.push("/auth/login");
   }, [router]);
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {

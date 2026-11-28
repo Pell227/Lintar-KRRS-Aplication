@@ -133,7 +133,7 @@ export default function Login() {
 
           <p className="mt-6 text-center text-sm text-white">
             Belum punya akun?{" "}
-            <Link href="/register" className="font-semibold underline">
+            <Link href="/auth/register" className="font-semibold underline">
               Buat akun
             </Link>
           </p>

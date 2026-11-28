@@ -118,7 +118,7 @@ export default function Register() {
                   password tadi.
                 </p>
                 <Link
-                  href="/login"
+                  href="/auth/login"
                   className="block w-full rounded-lg bg-[#ab1509] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#861007]"
                 >
                   Masuk sekarang
@@ -179,7 +179,7 @@ export default function Register() {
 
           <p className="mt-6 text-center text-sm text-white">
             Sudah punya akun?{" "}
-            <Link href="/login" className="font-semibold underline">
+            <Link href="/auth/login" className="font-semibold underline">
               Masuk
             </Link>
           </p>
