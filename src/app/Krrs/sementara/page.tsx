@@ -1,100 +1,25 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "../../components/themeprovider";
 
-const courses = [
-  {
-    id: "IF301",
-    name: "Basis Data",
-    sks: 4,
-    kelas: "A",
-    jadwal: [
-      {
-        waktu: "Senin, 07.30–09.10",
-        ruang: "R. 301",
-      },
-      {
-        waktu: "Senin, 09.30–11.10",
-        ruang: "R. 301",
-      },
-    ],
-  },
-  {
-    id: "IF302",
-    name: "Pemrograman Web",
-    sks: 2,
-    kelas: "B",
-    jadwal: [
-      {
-        waktu: "Selasa, 10.00–11.40",
-        ruang: "Lab. Pemrograman 2",
-      },
-    ],
-  },
-  {
-    id: "IF303",
-    name: "Rekayasa Perangkat Lunak",
-    sks: 4,
-    kelas: "A",
-    jadwal: [
-      {
-        waktu: "Rabu, 13.00–14.40",
-        ruang: "R. 205",
-      },
-      {
-        waktu: "Rabu, 15.00–16.40",
-        ruang: "R. 205",
-      },
-    ],
-  },
-  {
-    id: "IF304",
-    name: "Jaringan Komputer",
-    sks: 4,
-    kelas: "B",
-    jadwal: [
-      {
-        waktu: "Kamis, 07.30–09.10",
-        ruang: "Lab. Jaringan 1",
-      },
-      {
-        waktu: "Kamis, 09.30–11.10",
-        ruang: "Lab. Jaringan 1",
-      },
-    ],
-  },
-  {
-    id: "MKU201",
-    name: "Bahasa Inggris",
-    sks: 4,
-    kelas: "A",
-    jadwal: [
-      {
-        waktu: "Jumat, 09.30–11.10",
-        ruang: "R. 402",
-      },
-      {
-        waktu: "Jumat, 11.30–13.10",
-        ruang: "R. 402",
-      },
-    ],
-  },
-  {
-    id: "IF305",
-    name: "Struktur Data",
-    sks: 2,
-    kelas: "A",
-    jadwal: [
-      {
-        waktu: "Senin, 13.00–14.40",
-        ruang: "Lab. Komputer 1",
-      },
-    ],
-  },
-];
+interface Jadwal {
+  sesi: number;
+  hari: string;
+  mulai: string;
+  selesai: string;
+  ruang: string;
+}
+
+interface Course {
+  _id: string;
+  kode: string;
+  nama: string;
+  sks: number;
+  kelas: string;
+  jadwal: Jadwal[];
+}
 
 const STORAGE_KEY = "lintar-krrs-selected";
 
@@ -103,33 +28,57 @@ export default function KrrsSementara() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  const [courses, setCourses] = useState<Course[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
+    async function loadData() {
       try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if (!saved) {
+          setSelected([]);
+          return;
+        }
+
         const parsed = JSON.parse(saved);
 
-        if (Array.isArray(parsed)) {
-          const validIds = parsed.filter((id) =>
-            courses.some((course) => course.id === id)
-          );
-
-          setSelected(validIds);
+        if (!Array.isArray(parsed)) {
+          setSelected([]);
+          return;
         }
-      } catch {
-        localStorage.removeItem(STORAGE_KEY);
+
+        setSelected(parsed);
+
+        const response = await fetch("/api/matakuliah");
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.message || "Gagal mengambil data mata kuliah."
+          );
+        }
+
+        setCourses(result.data);
+      } catch (err) {
+        console.error("Gagal memuat KRRS:", err);
+
+        setError(
+          "Gagal mengambil data KRRS. Silakan muat ulang halaman."
+        );
+      } finally {
+        setLoading(false);
       }
     }
 
-    setLoaded(true);
+    loadData();
   }, []);
 
   const selectedCourses = courses.filter((course) =>
-    selected.includes(course.id)
+    selected.includes(course.kode)
   );
 
   const totalCredits = selectedCourses.reduce(
@@ -141,10 +90,12 @@ export default function KrrsSementara() {
     ? "border-white/10 bg-white/5"
     : "border-black/10 bg-white";
 
-  const mainText = isDark ? "text-white" : "text-black";
+  const mainText = isDark
+    ? "text-white"
+    : "text-black";
 
   const mutedText = isDark
-    ? "text-white"
+    ? "text-white/70"
     : "text-black/60";
 
   const borderStyle = isDark
@@ -159,14 +110,46 @@ export default function KrrsSementara() {
     ? "hover:bg-white/5"
     : "hover:bg-[#f5eded]";
 
-  const accentColor = isDark ? "#2F578A" : "#D72323";
+  const accentColor = isDark
+    ? "#2F578A"
+    : "#D72323";
 
-  if (!loaded) {
+  if (loading) {
     return (
       <main
         className={`flex min-h-screen items-center justify-center ${mainText}`}
       >
-        <p className={mutedText}>Memuat KRRS...</p>
+        <p className={mutedText}>
+          Memuat KRRS...
+        </p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main
+        className={`flex min-h-screen items-center justify-center px-4 ${mainText}`}
+      >
+        <div
+          className={`w-full max-w-md rounded-2xl border p-8 text-center shadow-lg ${cardStyle}`}
+        >
+          <h1 className="text-xl font-bold">
+            Gagal Memuat KRRS
+          </h1>
+
+          <p className={`mt-2 text-sm ${mutedText}`}>
+            {error}
+          </p>
+
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-6 rounded-lg px-5 py-2.5 text-sm font-semibold text-white"
+            style={{ backgroundColor: accentColor }}
+          >
+            Muat Ulang
+          </button>
+        </div>
       </main>
     );
   }
@@ -201,10 +184,11 @@ export default function KrrsSementara() {
   }
 
   return (
-    <main className={`min-h-screen px-4 py-8 sm:px-8 ${mainText}`}>
+    <main
+      className={`min-h-screen px-4 py-8 sm:px-8 ${mainText}`}
+    >
       <div className="mx-auto max-w-6xl">
 
-        {/* Header */}
         <header
           className="mb-8 rounded-2xl px-6 py-7 text-white shadow-lg sm:px-8"
           style={{
@@ -227,7 +211,6 @@ export default function KrrsSementara() {
           </p>
         </header>
 
-        {/* Informasi Mahasiswa */}
         <section
           className={`mb-6 grid gap-4 rounded-xl border p-5 shadow-lg shadow-black/5 sm:grid-cols-2 ${cardStyle}`}
         >
@@ -256,7 +239,6 @@ export default function KrrsSementara() {
           </div>
         </section>
 
-        {/* Daftar Mata Kuliah */}
         <section
           className={`overflow-hidden rounded-xl border shadow-xl shadow-black/5 ${cardStyle}`}
         >
@@ -304,20 +286,23 @@ export default function KrrsSementara() {
                 </tr>
               </thead>
 
-              <tbody className={`divide-y ${borderStyle}`}>
+              <tbody
+                className={`divide-y ${borderStyle}`}
+              >
                 {selectedCourses.map((course) => (
                   <tr
-                    key={course.id}
+                    key={course._id}
                     className={`transition ${hoverStyle}`}
                   >
+
                     <td
                       className={`px-5 py-4 font-medium ${mutedText}`}
                     >
-                      {course.id}
+                      {course.kode}
                     </td>
 
                     <td className="px-4 py-4 font-semibold">
-                      {course.name}
+                      {course.nama}
                     </td>
 
                     <td className="px-4 py-4 text-center">
@@ -325,26 +310,29 @@ export default function KrrsSementara() {
                     </td>
 
                     <td className="px-4 py-4 text-center">
-                      {course.kelas}
+                      {course.kelas || "-"}
                     </td>
 
-                    {/* Jadwal per sesi */}
-                    <td className={`px-4 py-4 ${mutedText}`}>
+                    <td
+                      className={`px-4 py-4 ${mutedText}`}
+                    >
                       <div className="flex flex-col gap-2 whitespace-nowrap">
-                        {course.jadwal.map((sesi, index) => (
-                          <span key={index}>
-                            {sesi.waktu}
+                        {course.jadwal?.map((sesi) => (
+                          <span key={sesi.sesi}>
+                            {sesi.hari},{" "}
+                            {sesi.mulai}–{sesi.selesai}
                           </span>
                         ))}
                       </div>
                     </td>
 
-                    {/* Ruang per sesi */}
-                    <td className={`px-4 py-4 ${mutedText}`}>
+                    <td
+                      className={`px-4 py-4 ${mutedText}`}
+                    >
                       <div className="flex flex-col gap-2 whitespace-nowrap">
-                        {course.jadwal.map((sesi, index) => (
-                          <span key={index}>
-                            {sesi.ruang}
+                        {course.jadwal?.map((sesi) => (
+                          <span key={sesi.sesi}>
+                            {sesi.ruang || "-"}
                           </span>
                         ))}
                       </div>
@@ -355,7 +343,6 @@ export default function KrrsSementara() {
             </table>
           </div>
 
-          {/* Total SKS */}
           <div
             className={`border-t px-5 py-4 ${borderStyle}`}
           >
@@ -371,7 +358,6 @@ export default function KrrsSementara() {
           </div>
         </section>
 
-        {/* Action Buttons */}
         <div className="mt-6 flex flex-col justify-between gap-3 sm:flex-row">
           <button
             onClick={() => router.push("/krrs")}
