@@ -7,6 +7,7 @@ const jadwalSchema = new mongoose.Schema(
     mulai: { type: String, required: true },
     selesai: { type: String, required: true },
     ruang: { type: String, trim: true },
+    idDosen: { type: String, trim: true, default: "" },
   },
   { _id: false },
 );
@@ -22,6 +23,9 @@ const matakuliahSchema = new mongoose.Schema(
       enum: ["Wajib", "Pilihan"],
       required: true,
     },
+
+    idDosen: { type: String, trim: true, default: "" },
+
     jadwal: {
       type: [jadwalSchema],
       default: [],
