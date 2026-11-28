@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import {
   dataMahasiswa,
   dataAkademik,
@@ -7,11 +10,8 @@ import {
 } from "../data/datadash";
 
 import book from "../Assets/book.png";
-import IPK from "../Assets/graduation.png";
-import IPS from "../Assets/report.png";
-import kehadiran from "../Assets/attendance.png";
-import SKS from "../Assets/stackbook.png";
 import profile from "../Assets/profile.jpg";
+import { useTheme } from "../components/themeprovider";
 
 const warna = [
   "bg-[#D72323] text-white",
@@ -22,6 +22,7 @@ const warna = [
 const hariKal = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
 export default function Dashboard() {
+  const router = useRouter();
   const now = new Date();
   const tahun = now.getFullYear();
   const bulan = now.getMonth();
@@ -43,19 +44,28 @@ export default function Dashboard() {
     ...Array(kosong).fill(null),
     ...Array.from({ length: jumlahHari }, (_, i) => i + 1),
   ];
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const gradient = isDark
+    ? "linear-gradient(to right, #82adca, #074a76)"
+    : "linear-gradient(to right, #D72323, #F5EFE1)";
+  const textColor = isDark ? "text-white" : "text-black";
+  const borderColor = isDark ? "border-white/40" : "border-black/20";
+  const innerBg = isDark ? "bg-white/10" : "bg-white";
+  const subText = isDark ? "text-white/60" : "text-black/60";
 
   return (
     <div className="grid gap-4 xl:grid-cols-[1fr_340px]">
       <div className="grid content-start gap-4">
         <div
-          className="flex min-h-[120px] items-center justify-between rounded-2xl px-5 py-3 text-black"
-          style={{ background: "linear-gradient(to right, #D72323, #F5EDED" }}
+          className={`flex min-h-[120px] items-center justify-between rounded-2xl px-5 py-3 border-solid border-2 ${borderColor} ${textColor}`}
+          style={{ background: gradient }}
         >
           <div>
-            <h1 className="font-serif text-3xl font-normal tracking-wide uppercase color-[#ffffff]">
+            <h1 className="font-serif text-3xl font-normal tracking-wide uppercase">
               WELCOME BACK, {dataMahasiswa.Nama}!
             </h1>
-            <p className="mt-1 font-serif text-sm text-black/80">
+            <p className="mt-1 font-serif text-sm opacity-80">
               {dataMahasiswa.NIM} · {dataMahasiswa.Prodi}
             </p>
           </div>
@@ -74,17 +84,12 @@ export default function Dashboard() {
           }}
         >
           <div
-            className="relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3"
-            style={{
-              background: "linear-gradient(to right, #CBD9EE, #EFF4FB)",
-            }}
+            className={`relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3 border-solid border-2 ${borderColor} ${textColor}`}
+            style={{ background: gradient }}
           >
             <p className="text-sm">IPK</p>
-
-            <img
-              src={IPK.src}
-              alt=""
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-solid fa-graduation-cap text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",
@@ -92,21 +97,16 @@ export default function Dashboard() {
                 transform: "translateY(-50%)",
               }}
             />
-
             <p className="text-xl font-semibold">{dataAkademik.ipk}</p>
           </div>
 
           <div
-            className="relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3"
-            style={{
-              background: "linear-gradient(to right, #f5e9DB, #FDF9F3)",
-            }}
+            className={`relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3 border-solid border-2 ${borderColor} ${textColor}`}
+            style={{ background: gradient }}
           >
             <p className="text-sm">IPS</p>
-
-            <img
-              src={IPS.src}
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-regular fa-file-lines text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",
@@ -114,19 +114,16 @@ export default function Dashboard() {
                 transform: "translateY(-50%)",
               }}
             />
-
             <p className="text-xl font-semibold">{dataAkademik.ips}</p>
           </div>
 
           <div
-            className="relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3"
-            style={{ background: "linear-gradient(to right,#f2d9dc, #fcf3f4)" }}
+            className={`relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3 border-solid border-2 ${borderColor} ${textColor}`}
+            style={{ background: gradient }}
           >
             <p className="text-sm">Total SKS</p>
-
-            <img
-              src={SKS.src}
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-solid fa-book text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",
@@ -134,21 +131,16 @@ export default function Dashboard() {
                 transform: "translateY(-50%)",
               }}
             />
-
             <p className="text-xl font-semibold">{dataAkademik.sks}</p>
           </div>
 
           <div
-            className="relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3"
-            style={{
-              background: "linear-gradient(to right, #DDE5EC, #F6F9FB)",
-            }}
+            className={`relative flex min-h-[120px] flex-col justify-between rounded-2xl p-3 border-solid border-2 ${borderColor} ${textColor}`}
+            style={{ background: gradient }}
           >
             <p className="text-sm">Kehadiran</p>
-
-            <img
-              src={kehadiran.src}
-              className="h-16 w-16 object-contain"
+            <i
+              className="fa-solid fa-chart-line text-5xl"
               style={{
                 position: "absolute",
                 top: "50%",
@@ -156,10 +148,10 @@ export default function Dashboard() {
                 transform: "translateY(-50%)",
               }}
             />
-
             <p className="text-xl font-semibold">{dataAkademik.kehadiran}%</p>
           </div>
         </div>
+
         <div
           className="gap-3"
           style={{
@@ -167,14 +159,17 @@ export default function Dashboard() {
             gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
           }}
         >
-          <div className="rounded-2xl bg-[#dfe4f7] p-4 text-black">
+          <div
+            className={`rounded-2xl p-4 border-solid border-2 ${borderColor} ${textColor}`}
+            style={{ background: gradient }}
+          >
             <h2 className="mb-3 font-serif text-xl uppercase">Dosen Wali</h2>
-            <div className="rounded-xl bg-white p-4">
+            <div className={`rounded-xl p-4 ${innerBg}`}>
               <p className="font-serif text-xl font-semibold">
                 {dataDosenPa.namadosen}
               </p>
               <p className="text-xs font-semibold">Dosen Pembimbing</p>
-              <p className="text-xs text-black/60">NPD : {dataDosenPa.npd}</p>
+              <p className={`text-xs ${subText}`}>NPD : {dataDosenPa.npd}</p>
 
               <ul className="mt-4 space-y-3 text-base font-medium">
                 <li className="flex items-center gap-3">
@@ -193,9 +188,12 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[#F5EDED] p-4 text-black">
+          <div
+            className={`rounded-2xl p-4 border-solid border-2 ${borderColor} ${textColor}`}
+            style={{ background: gradient }}
+          >
             <h2 className="mb-3 font-serif text-xl uppercase">Jadwal</h2>
-            <div className="rounded-xl bg-white p-4">
+            <div className={`rounded-xl p-4 ${innerBg}`}>
               <div className="mb-2 flex items-center justify-between text-xs">
                 <span>{tanggalPanjang}</span>
                 <span className="underline">Lihat semua</span>
@@ -205,12 +203,12 @@ export default function Dashboard() {
                 {dataJadwal.map((j) => (
                   <li
                     key={j.kodemat}
-                    className="flex gap-3 border-t py-2 text-xs first:border-t-0"
+                    className={`flex gap-3 border-t py-2 text-xs first:border-t-0 ${isDark ? "border-white/20" : ""}`}
                   >
                     <span className="w-20 shrink-0">{j.jam}</span>
                     <div>
                       <p className="font-semibold">{j.matkul}</p>
-                      <p className="text-black/60">
+                      <p className={subText}>
                         {j.hari} · Ruang {j.ruang}
                       </p>
                     </div>
@@ -222,7 +220,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <aside className="content-start rounded-2xl bg-[#F5EDED] p-4 text-black">
+      <aside
+        className={`content-start rounded-2xl p-4 border-solid border-2 ${borderColor} ${textColor}`}
+        style={{ background: gradient }}
+      >
         <div className="flex flex-col items-center">
           <div
             className="flex items-center justify-center rounded-full bg-slate-700 font-serif text-3xl text-white"
@@ -231,12 +232,15 @@ export default function Dashboard() {
             <img src={profile.src} className="rounded-full"></img>
           </div>
           <p className="mt-1 font-serif text-lg">{dataMahasiswa.Nama}</p>
-          <button className="mt-1 rounded-full border-2 border-black bg-white px-4 py-0.5 font-serif text-base font-semibold">
+          <button
+            onClick={() => router.push("/profile")}
+            className={`mt-1 rounded-full border-2 px-4 py-0.5 font-serif text-base font-semibold ${borderColor} ${innerBg}`}
+          >
             Profile
           </button>
         </div>
 
-        <div className="mt-4 rounded-xl bg-white p-3">
+        <div className={`mt-4 rounded-xl p-3 ${innerBg}`}>
           <p className="mb-2 text-center text-sm font-semibold capitalize">
             {judulBulan}
           </p>
@@ -248,7 +252,10 @@ export default function Dashboard() {
             }}
           >
             {hariKal.map((h) => (
-              <span key={h} className="text-slate-400">
+              <span
+                key={h}
+                className={isDark ? "text-white/50" : "text-slate-400"}
+              >
                 {h}
               </span>
             ))}
@@ -257,7 +264,7 @@ export default function Dashboard() {
                 key={i}
                 className={
                   tgl === tglHariIni
-                    ? "rounded-md bg-slate-900 py-1 text-white"
+                    ? `rounded-md py-1 ${isDark ? "bg-white text-black" : "bg-slate-900 text-white"}`
                     : "py-1"
                 }
               >

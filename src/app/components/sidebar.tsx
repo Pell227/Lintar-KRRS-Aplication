@@ -8,15 +8,22 @@ import { useTheme } from "./themeprovider";
 type Side = {
   label: string;
   href: string;
+  icon?: string;
 };
 
 const sidebar: Side[] = [
-  { label: "Pengumuman", href: "/pengumuman" },
-  { label: "Dashboard", href: "/Dashboard" },
-  { label: "KRRS", href: "/Krrs" },
-  { label: "Akademik", href: "/akademik" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Landpage", href: "/" },
+  { label: "Pengumuman", href: "/pengumuman", icon: "fa-solid fa-bullhorn" },
+  {
+    label: "Dashboard",
+    href: "/Dashboard",
+    icon: "fa-solid fa-tachograph-digital",
+  },
+  { label: "Profile", href: "/profile", icon: "fa-regular fa-circle-user" },
+  { label: "KRRS", href: "/Krrs", icon: "fa-solid fa-book-open" },
+  { label: "KHS", href: "/KHS", icon: "fa-regular fa-id-card" },
+  { label: "Kalender", href: "/akademik", icon: "fa-solid fa-calendar" },
+  { label: "FAQ", href: "/faq", icon: "fa-solid fa-question" },
+  { label: "Logout", href: "/", icon: "fa-solid fa-right-from-bracket" },
 ];
 
 export default function Sidebar() {
@@ -43,7 +50,7 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-screen w-60 flex-col rounded-2xl p-4 transition-all duration-300 md:translate-x-0 ${
+        className={`fixed left-0 top-0 z-40 flex h-screen w-60 flex-col rounded-r-2xl p-4 transition-all duration-300 md:translate-x-0 ${
           isDark ? "bg-[#31363F] text-[#EEEEEE]" : "bg-white text-black"
         } ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
@@ -59,7 +66,7 @@ export default function Sidebar() {
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-lg px-3 py-3 transition-colors ${
+                    className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
                       isActive
                         ? isDark
                           ? "bg-[#76ABAE] text-[#222831] font-semibold"
@@ -69,7 +76,10 @@ export default function Sidebar() {
                           : "text-black hover:bg-[#F5EDED]"
                     }`}
                   >
-                    {item.label}
+                    {item.icon && (
+                      <i className={`${item.icon} w-5 text-center text-2xl`} />
+                    )}
+                    <span>{item.label}</span>
                   </Link>
                 </li>
               );
@@ -84,14 +94,6 @@ export default function Sidebar() {
               : "border-gray-200 bg-[#F5EDED]"
           }`}
         >
-          <p
-            className={`mb-3 text-sm font-semibold ${
-              isDark ? "text-[#EEEEEE]" : "text-[#3E3636]"
-            }`}
-          >
-            Tampilan
-          </p>
-
           <button
             type="button"
             onClick={toggleTheme}
