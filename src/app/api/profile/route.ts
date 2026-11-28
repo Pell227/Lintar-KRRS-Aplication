@@ -3,28 +3,32 @@ import connectDB from "@/lib/mongodb";
 import Mahasiswa from "@/models/mahasiswa";
 
 export async function GET(req: Request) {
-  await connectDB();
+  try {
+    await connectDB();
 
-  const nim = new URL(req.url).searchParams.get("nim");
-  if (!nim) {
-    return NextResponse.json({ error: "NIM wajib diisi" }, { status: 400 });
+    const nim = new URL(req.url).searchParams.get("nim");
+    if (!nim) {
+      return NextResponse.json({ error: "NIM wajib diisi" }, { status: 400 });
+    }
+
+    const data = await Mahasiswa.findOne({ NIM: nim });
+    if (!data) {
+      return NextResponse.json(
+        { error: "Mahasiswa tidak ditemukan" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(data);
+  } catch (err) {
+    const pesan = err instanceof Error ? err.message : "Server error";
+    return NextResponse.json({ error: pesan }, { status: 500 });
   }
-
-  const data = await Mahasiswa.findOne({ NIM: nim });
-  if (!data) {
-    return NextResponse.json(
-      { error: "Mahasiswa tidak ditemukan" },
-      { status: 404 },
-    );
-  }
-
-  return NextResponse.json(data);
 }
 
 export async function POST(req: Request) {
-  await connectDB();
-
   try {
+    await connectDB();
     const body = await req.json();
     const baru = await Mahasiswa.create(body);
     return NextResponse.json(baru, { status: 201 });
@@ -35,23 +39,28 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  await connectDB();
+  try {
+    await connectDB();
 
-  const { NIM, ...perubahan } = await req.json();
-  if (!NIM) {
-    return NextResponse.json({ error: "NIM wajib diisi" }, { status: 400 });
+    const { NIM, ...perubahan } = await req.json();
+    if (!NIM) {
+      return NextResponse.json({ error: "NIM wajib diisi" }, { status: 400 });
+    }
+
+    const data = await Mahasiswa.findOneAndUpdate({ NIM }, perubahan, {
+      new: true,
+      runValidators: true,
+    });
+    if (!data) {
+      return NextResponse.json(
+        { error: "Mahasiswa tidak ditemukan" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(data);
+  } catch (err) {
+    const pesan = err instanceof Error ? err.message : "Gagal memperbarui";
+    return NextResponse.json({ error: pesan }, { status: 400 });
   }
-
-  const data = await Mahasiswa.findOneAndUpdate({ NIM }, perubahan, {
-    new: true,
-    runValidators: true,
-  });
-  if (!data) {
-    return NextResponse.json(
-      { error: "Mahasiswa tidak ditemukan" },
-      { status: 404 },
-    );
-  }
-
-  return NextResponse.json(data);
 }
