@@ -155,14 +155,14 @@ function Navbar() {
             </a>
           ))}
           <Link
-            href="/login"
+            href="/auth/login" 
             className="ml-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
           >
             Masuk
           </Link>
           <Link
-            href="/register"
-            className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#ab1509] transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            href="/auth/register"
+            className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#D72323] transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Daftar
           </Link>
@@ -198,14 +198,14 @@ function Navbar() {
           ))}
           <div className="mt-2 grid grid-cols-2 gap-3">
             <Link
-              href="/login"
+              href="/auth/login" 
               className="rounded-full border border-white/40 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-white/10"
             >
               Masuk
             </Link>
             <Link
-              href="/register"
-              className="rounded-full bg-white px-4 py-2.5 text-center text-sm font-semibold text-[#ab1509] hover:bg-red-50"
+              href="/auth/register" 
+              className="rounded-full bg-white px-4 py-2.5 text-center text-sm font-semibold text-[#D72323] hover:bg-red-50"
             >
               Daftar
             </Link>
@@ -260,7 +260,7 @@ export default function LandingPage() {
 
       <section
         id="beranda"
-        className="relative isolate flex min-h-[34rem] items-center justify-center overflow-hidden bg-[linear-gradient(115deg,#5c0b06_0%,#7c1009_35%,#ab1509_75%,#c52a1d_100%)] px-6 pb-20 pt-32 text-center text-white lg:min-h-[41rem]"
+        className="relative isolate flex min-h-[34rem] items-center justify-center overflow-hidden bg-[linear-gradient(115deg,#5c0b06_0%,#7c1009_55%,#D72323_100%)] px-6 pb-20 pt-32 text-center text-white lg:min-h-[41rem]"
       >
         <div
           aria-hidden="true"
@@ -285,15 +285,15 @@ export default function LandingPage() {
             serta membaca pengumuman kampus dalam satu tempat.
           </p>
           <Link
-            href="/register"
-            className="mt-9 inline-block rounded-full bg-white px-9 py-3.5 text-sm font-semibold text-[#ab1509] shadow-lg shadow-black/20 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            href="/auth/register" 
+            className="mt-9 inline-block rounded-full bg-white px-9 py-3.5 text-sm font-semibold text-[#D72323] shadow-lg shadow-black/20 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Mulai Sekarang
           </Link>
           <p className="mt-5 text-sm text-white/80">
             Sudah punya akun?{" "}
             <Link
-              href="/login"
+              href="/auth/login"
               className="font-semibold text-white underline underline-offset-4"
             >
               Masuk
@@ -305,9 +305,9 @@ export default function LandingPage() {
       <section id="tentang" className="scroll-mt-16 px-6 py-20 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mx-auto max-w-2xl text-center">
-            <Ikon nama="wisuda" className="mx-auto h-8 w-8 text-[#ab1509]" />
+            <Ikon nama="wisuda" className="mx-auto h-8 w-8 text-[#D72323]" />
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Tentang <span className="text-[#ab1509]">Lintar</span>
+              Tentang <span className="text-[#D72323]">Lintar</span>
             </h2>
             <p className="mt-4 text-pretty leading-relaxed text-slate-600">
               Lintar adalah portal akademik untuk mahasiswa Untar. Jadwal, KRRS,
@@ -320,13 +320,13 @@ export default function LandingPage() {
             {tentang.map((kartu) => (
               <li
                 key={kartu.judul}
-                className="rounded-md border border-slate-100 bg-white px-7 py-9 text-center shadow-[0_12px_40px_-24px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_-22px_rgba(171,21,9,0.45)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="rounded-md border border-slate-100 bg-white px-7 py-9 text-center shadow-[0_12px_40px_-24px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_-22px_rgba(215,35,35,0.45)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 <Ikon
                   nama={kartu.ikon}
-                  className="mx-auto h-10 w-10 text-[#ab1509]"
+                  className="mx-auto h-10 w-10 text-[#D72323]"
                 />
-                <span className="mx-auto my-5 block h-0.5 w-8 bg-[#ab1509]" />
+                <span className="mx-auto my-5 block h-0.5 w-8 bg-[#D72323]" />
                 <h3 className="font-semibold text-slate-900">{kartu.judul}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">
                   {kartu.isi}
