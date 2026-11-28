@@ -61,7 +61,7 @@ export default function Login() {
           width={697}
           height={680}
           loading="eager"
-          className="pointer-events-none absolute -right-24 top-1/2 h-[120%] w-auto -translate-y-1/2 opacity-10 brightness-0 invert"
+          className="pointer-events-none absolute -right-24 top-1/2 w-[51.25rem] -translate-y-1/2 opacity-10 brightness-0 invert"
         />
 
         <div className="relative w-full max-w-md">
