@@ -28,7 +28,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Tombol Sidebar Mobile */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed left-3 top-3 z-50 rounded-md bg-[#3E3636] px-3 py-1.5 text-xl text-white md:hidden"
