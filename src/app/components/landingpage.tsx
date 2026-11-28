@@ -155,13 +155,13 @@ function Navbar() {
             </a>
           ))}
           <Link
-            href="/login"
+            href="/auth/login" 
             className="ml-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
           >
             Masuk
           </Link>
           <Link
-            href="/register"
+            href="/auth/register"
             className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#ab1509] transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Daftar
@@ -198,13 +198,13 @@ function Navbar() {
           ))}
           <div className="mt-2 grid grid-cols-2 gap-3">
             <Link
-              href="/login"
+              href="/auth/login" 
               className="rounded-full border border-white/40 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-white/10"
             >
               Masuk
             </Link>
             <Link
-              href="/register"
+              href="/auth/register" 
               className="rounded-full bg-white px-4 py-2.5 text-center text-sm font-semibold text-[#ab1509] hover:bg-red-50"
             >
               Daftar
@@ -285,7 +285,7 @@ export default function LandingPage() {
             serta membaca pengumuman kampus dalam satu tempat.
           </p>
           <Link
-            href="/register"
+            href="/auth/register" 
             className="mt-9 inline-block rounded-full bg-white px-9 py-3.5 text-sm font-semibold text-[#ab1509] shadow-lg shadow-black/20 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Mulai Sekarang
@@ -293,7 +293,7 @@ export default function LandingPage() {
           <p className="mt-5 text-sm text-white/80">
             Sudah punya akun?{" "}
             <Link
-              href="/login"
+              href="/auth/login" 
               className="font-semibold text-white underline underline-offset-4"
             >
               Masuk
